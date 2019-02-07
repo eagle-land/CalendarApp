@@ -1,22 +1,22 @@
 # Calendar App
 
 ## Team Members
-#### President
+### President
 - John Yun jyun4@kent.edu
-#### Project manager
+### Project manager
 - Adam Ruyten Aruyten@kent.edu
-#### Market Analyst
+### Market Analyst
 - Sierra Reed sreed30@kent.edu
-#### Requirements Analysts
+### Requirements Analysts
 - Orin Higgins ohiggins@kent.edu
 - Matthew Maille mmaille@kent.edu
-#### Software Developers
+### Software Developers
 - Bryce Benjamin bbenjam5@kent.edu
 - Jacob Weidokal jweidoka@kent.edu
 - Jared Anderson jande135@kent.edu
-#### Test Engineers
+### Test Engineers
 - Jessica Warren jwarre24@kent.edu
 - Luke Rinehart lrineha1@kent.edu
-#### Operations Engineers
+### Operations Engineers
 - Brian Cottrell bcottrel@kent.edu
 
