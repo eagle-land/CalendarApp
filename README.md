@@ -1,8 +1,10 @@
 # Calendar App
 
 ### Team Members
-- Orin Higgins ohiggins@kent.edu
+##### President
 - John Yun jyun4@kent.edu
+- Orin Higgins ohiggins@kent.edu
+
 - Matthew Maille mmaille@kent.edu
 - Sierra Reed sreed30@kent.edu
 - Bryce Benjamin bbenjam5@kent.edu
