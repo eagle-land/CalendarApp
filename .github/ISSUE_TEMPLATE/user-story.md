@@ -7,4 +7,8 @@ assignees: ''
 
 ---
 
-**What might the user want to see?
+| As a/an  | I want to...  | So that...  | Notes  | Priority  |
+|----------|--------------|-----------|---------|----------|
+|   |   |   |   |   |
+|   |   |   |   |   |
+|   |   |   |   |   |
