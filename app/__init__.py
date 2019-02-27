@@ -41,5 +41,10 @@ def create_app(test_config=None):
     @app.route('/contact')
     def contact():
         return render_template('contact.html')
+    
+    @app.route('/test')
+    def testapi():
+        #CALL API HERE
+        return #API DATA HERE
 
     return app
