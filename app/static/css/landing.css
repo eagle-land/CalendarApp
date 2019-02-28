@@ -1,0 +1,8 @@
+.radial-bg {
+    background: radial-gradient(gray, black);
+}
+
+.vert-align {
+    padding-top: 500px;
+    padding-bottom: 30vh
+}

@@ -1,21 +1,26 @@
 {% extends 'base.html' %}
 
 {% block title %}Home{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="display-1 text-center">Calendar App</h1>
+    <div class="radial-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="display-1 text-center text-white">Calendar App</h1>
+                </div>
+            </div>
+            <div class="row justify-content-md-center">
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-primary">Create Account</button>
+                </div>
+                <div class="col-md-3">
+                    <button type="button" class="btn btn-primary">Login</button>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row justify-content-md-center">
-        <div class="col-md-3">
-            <button type="button" class="btn btn-primary">Create Account</button>
-        </div>
-        <div class="col-md-3">
-            <button type="button" class="btn btn-primary">Login</button>
-        </div>
-    </div>
-</div>
 {% endblock %}
