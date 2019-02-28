@@ -2,11 +2,11 @@
 
 {% block title %}Home{% endblock %}
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css', q='12345') }}">
 {% endblock %}
 
 {% block content %}
-    <div class="radial-bg">
+    <div class="radial-bg vert-align">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
