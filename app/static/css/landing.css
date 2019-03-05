@@ -6,3 +6,11 @@
     padding-top: 40vh;
     padding-bottom: 40vh;
 }
+
+.button {
+    width: 175px;
+}
+
+.button-spacer {
+    height: 50px;
+}
