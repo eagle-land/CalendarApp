@@ -5,7 +5,7 @@ import datetime
 import pickle
 import os.path
 from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google_auth_oauthlib.flow import InstalledAppFlow, Flow
 from google.auth.transport.requests import Request
 
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -105,8 +105,31 @@ def create_app(test_config=None):
 
         return events_string
 
-    @app.route('/callback/<calendar_data>')
-    def callback(calendar_data):
-        return calendar_data
+    @app.route('/webtest')
+    def web_test():
+
+        # Use the client_secret.json file to identify the application requesting
+        # authorization. The client ID (from that file) and access scopes are required.
+        flow = Flow.from_client_secrets_file('client_secret.json', SCOPES)
+
+        # Indicate where the API server will redirect the user after the user completes
+        # the authorization flow. The redirect URI is required.
+        flow.redirect_uri = 'http://localhost:5000/callback'
+
+        # Generate URL for request to Google's OAuth 2.0 server.
+        # Use kwargs to set optional request parameters.
+        authorization_url, state = flow.authorization_url(
+            # Enable offline access so that you can refresh an access token without
+            # re-prompting the user for permission. Recommended for web server apps.
+            access_type="offline",
+            # Enable incremental authorization. Recommended as a best practice.
+            include_granted_scopes="true")
+
+        return redirect(authorization_url)
+
+    @app.route('/callback')
+    def callback():
+        code = request.args.get('code')
+        return 'Code to be used to call apis: ' + code
 
     return app
