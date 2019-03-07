@@ -101,6 +101,8 @@ def create_app(test_config=None):
         for event in events:
             events_string += event['summary'] + ' ' + event['start'].get('dateTime') + '<br />'
 
+        os.remove('token.pickle')
+
         return events_string
 
     @app.route('/callback/<calendar_data>')
