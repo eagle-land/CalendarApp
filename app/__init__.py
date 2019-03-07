@@ -129,6 +129,7 @@ def create_app(test_config=None):
 
     @app.route('/callback')
     def callback():
+        # gets the value of the code parameter passed in the query string of the callback route
         code = request.args.get('code')
         return 'Code to be used to call apis: ' + code
 
