@@ -82,28 +82,38 @@ def create_app(test_config=None):
         service = build('calendar', 'v3', credentials=creds)
 
         # Call the Calendar API
-        now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-        print('Getting the upcoming 10 events')
-        events_result = service.events().list(calendarId='nba_5_%43leveland+%43avaliers#sports@group.v.calendar.google.com', timeMin=now,
-                                              maxResults=10, singleEvents=True,
-                                              orderBy='startTime').execute()
-        events = events_result.get('items', [])
+        now = "2019-03-12T00:00:00.0-04:00"
+        end = "2019-03-13T00:00:00.0-04:00"
+        body = {
+            "timeMin": now,
+            "timeMax": end,
+            "timeZone": "America/New_York",
+            "items": [
+                {
+                    "id": "anderson.jared.16@gmail.com"
+                }
+            ],
+        }
 
-        if not events:
-            print('No upcoming events found.')
-        for event in events:
-            start = event['start'].get('dateTime', event['start'].get('date'))
-            print(start, event['summary'])
+        response = service.freebusy().query(body=body).execute()
 
-        events_string = ""
+        freebusy_string = ""
 
-        # Formatting data to be returned to html
-        for event in events:
-            events_string += event['summary'] + ' ' + event['start'].get('dateTime') + '<br />'
+        if not response:
+            print('Error.')
+        calendars = response['calendars']
+        print(calendars)
+        calendar = calendars[body['items'][0]['id']]
+        for busytimes in calendar:
+            print(calendar[busytimes])
+            index = 0
+            for busy in calendar[busytimes]:
+                freebusy_string += calendar[busytimes][index]['start'] + ' - ' + calendar[busytimes][index]['end'] + '<br />'
+                index += 1
 
         os.remove('token.pickle')
 
-        return events_string
+        return freebusy_string
 
     @app.route('/webtest')
     def web_test():
