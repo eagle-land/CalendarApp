@@ -1,17 +1,27 @@
 from __future__ import print_function
 import os
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, session
+import flask
 import datetime
 import pickle
 import os.path
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow, Flow
-from google.auth.transport.requests import Request
+import requests
 
+import googleapiclient.discovery
+import google_auth_oauthlib.flow
+import google.oauth2.credentials
+#from google.auth.transport.requests import Request
+
+CLIENT_SECRETS_FILE = 'client_secret.json'
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-
+API_SERVICE_NAME = 'calendar'
+API_VERSION = 'v3'
 
 def create_app(test_config=None):
+    # When running locally, disable OAuthlib's HTTPs verification.
+    # ACTION ITEM for developers:
+    #     When running in production *do not* leave this option enabled.
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
@@ -33,11 +43,6 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-
     @app.route('/')
     def index():
         return render_template('index.html')
@@ -49,82 +54,63 @@ def create_app(test_config=None):
     @app.route('/contact')
     def contact():
         return render_template('contact.html')
-    
-    @app.route('/test')
-    def testapi():
 
-        # CALL API HERE
-        print('entered the function')
+    @app.route('/webtest')
+    def web_test():
+        if 'credentials' not in flask.session:
+            return flask.redirect('authorize')
 
-        """Shows basic usage of the Google Calendar API.
-        Prints the start and name of the next 10 events on the user's calendar.
-        """
-        creds = None
-        # The file token.pickle stores the user's access and refresh tokens, and is
-        # created automatically when the authorization flow completes for the first
-        # time.
-        if os.path.exists('token.pickle'):
-            with open('token.pickle', 'rb') as token:
-                creds = pickle.load(token)
-        # If there are no (valid) credentials available, let the user log in.
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                print('before')
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentials.json', SCOPES)
-                creds = flow.run_local_server()
-            # Save the credentials for the next run
-            with open('token.pickle', 'wb') as token:
-                pickle.dump(creds, token)
+        # Load credentials from the session.
+        credentials = google.oauth2.credentials.Credentials(
+            **flask.session['credentials'])
 
-        service = build('calendar', 'v3', credentials=creds)
+        calendar = googleapiclient.discovery.build(
+            API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
-        # Call the Calendar API
         now = "2019-03-12T00:00:00.0-04:00"
-        end = "2019-03-13T00:00:00.0-04:00"
+        end = "2019-03-19T00:00:00.0-04:00"
         body = {
             "timeMin": now,
             "timeMax": end,
             "timeZone": "America/New_York",
             "items": [
                 {
-                    "id": "anderson.jared.16@gmail.com"
+                    "id": "primary"
                 }
             ],
         }
 
-        response = service.freebusy().query(body=body).execute()
+        response = calendar.freebusy().query(body=body).execute()
 
         freebusy_string = ""
 
         if not response:
             print('Error.')
         calendars = response['calendars']
-        print(calendars)
         calendar = calendars[body['items'][0]['id']]
         for busytimes in calendar:
-            print(calendar[busytimes])
             index = 0
             for busy in calendar[busytimes]:
-                freebusy_string += calendar[busytimes][index]['start'] + ' - ' + calendar[busytimes][index]['end'] + '<br />'
+                freebusy_string += calendar[busytimes][index]['start'] + ' - ' + calendar[busytimes][index][
+                    'end'] + '<br />'
                 index += 1
 
-        os.remove('token.pickle')
+        # Save credentials back to session in case access token was refreshed.
+        # ACTION ITEM: In a production app, you likely want to save these
+        #              credentials in a persistent database instead.
+        flask.session['credentials'] = credentials_to_dict(credentials)
 
         return freebusy_string
 
-    @app.route('/webtest')
-    def web_test():
-
-        # Use the client_secret.json file to identify the application requesting
-        # authorization. The client ID (from that file) and access scopes are required.
-        flow = Flow.from_client_secrets_file('client_secret.json', SCOPES)
+    @app.route('/authorize')
+    def authorize():
+        # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
+        flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE, scopes=SCOPES)
 
         # Indicate where the API server will redirect the user after the user completes
         # the authorization flow. The redirect URI is required.
-        flow.redirect_uri = 'http://localhost:5000/callback'
+        flow.redirect_uri = flask.url_for('oauth2callback', _external=True)
 
         # Generate URL for request to Google's OAuth 2.0 server.
         # Use kwargs to set optional request parameters.
@@ -135,12 +121,83 @@ def create_app(test_config=None):
             # Enable incremental authorization. Recommended as a best practice.
             include_granted_scopes="true")
 
-        return redirect(authorization_url)
+        # Store the state so the callback can verify the auth server response.
+        flask.session['state'] = state
 
-    @app.route('/callback')
-    def callback():
-        # gets the value of the code parameter passed in the query string of the callback route
-        code = request.args.get('code')
-        return 'Code to be used to call apis: ' + code
+        return flask.redirect(authorization_url)
+
+    @app.route('/oauth2callback')
+    def oauth2callback():
+        # Specify the state when creating the flow in the callback so that it can
+        # verified in the authorization server response.
+        state = flask.session['state']
+
+        flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
+            CLIENT_SECRETS_FILE, scopes=SCOPES, state=state)
+        flow.redirect_uri = flask.url_for('oauth2callback', _external=True)
+
+        # Use the authorization server's response to fetch the OAuth 2.0 tokens.
+        authorization_response = flask.request.url
+        flow.fetch_token(authorization_response=authorization_response)
+
+        # Store credentials in the session.
+        # ACTION ITEM: In a production app, you likely want to save these
+        #              credentials in a persistent database instead.
+        credentials = flow.credentials
+        flask.session['credentials'] = credentials_to_dict(credentials)
+
+        return flask.redirect(flask.url_for('web_test'))
+
+    @app.route('/revoke')
+    def revoke():
+        if 'credentials' not in flask.session:
+            return ('You need to <a href="/authorize">authorize</a> before ' +
+                    'testing the code to revoke credentials.')
+
+        credentials = google.oauth2.credentials.Credentials(
+            **flask.session['credentials'])
+
+        revoke = requests.post('https://accounts.google.com/o/oauth2/revoke',
+                               params={'token': credentials.token},
+                               headers={'content-type': 'application/x-www-form-urlencoded'})
+
+        status_code = getattr(revoke, 'status_code')
+        if status_code == 200:
+            return ('Credentials successfully revoked.')
+        else:
+            return ('An error occurred.')
+
+    @app.route('/clear')
+    def clear_credentials():
+        if 'credentials' in flask.session:
+            del flask.session['credentials']
+        return ('Credentials have been cleared.<br><br>')
+
+    #from . import db
+    #db.init_app(app)
+
+    #from . import auth
+    #app.register_blueprint(auth.bp)
+
+    def credentials_to_dict(credentials):
+        return {
+            'token': credentials.token,
+            'refresh_token': credentials.refresh_token,
+            'token_uri': credentials.token_uri,
+            'client_id': credentials.client_id,
+            'client_secret': credentials.client_secret,
+            'scopes': credentials.scopes
+        }
+
+
+    #if __name__ == '__main__':
+        # When running locally, disable OAuthlib's HTTPs verification.
+        # ACTION ITEM for developers:
+        #     When running in production *do not* leave this option enabled.
+        #os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
+        # Specify a hostname and port that are set as a valid redirect URI
+        # for your API project in the Google API Console.
+        #app.run('localhost', 8080, debug=True)
 
     return app
