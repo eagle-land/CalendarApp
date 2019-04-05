@@ -16,3 +16,4 @@ build/
 *.egg-info/
 node_modules
 client_secret.json
+constants.py

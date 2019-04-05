@@ -2,10 +2,13 @@ from __future__ import print_function
 import os
 from flask import Flask, render_template, redirect, url_for, request, session
 import flask
+from authlib.flask.client import OAuth
 import datetime
 import pickle
 import os.path
 import requests
+from . import auth
+from . import constants
 
 import googleapiclient.discovery
 import google_auth_oauthlib.flow
@@ -26,9 +29,9 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         # OVERRIDE WHEN DEPLOYING APP
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+        SECRET_KEY=constants.SECRET_KEY,
     )
+    app.debug = True
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -43,6 +46,24 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    oauth = OAuth(app)
+
+    auth0 = oauth.register(
+        'auth0',
+        client_id=auth.AUTH0_CLIENT_ID,
+        client_secret=auth.AUTH0_CLIENT_SECRET,
+        api_base_url=auth.AUTH0_BASE_URL,
+        access_token_url=auth.AUTH0_BASE_URL + '/oauth/token',
+        authorize_url=auth.AUTH0_BASE_URL + '/authorize',
+        client_kwargs={
+            'scope': 'openid profile',
+        },
+    )
+
+    @app.errorhandler(Exception)
+    def handle_auth_error(ex):
+        return auth.handle_auth_error(ex)
+
     @app.route('/')
     def index():
         return render_template('index.html')
@@ -54,6 +75,23 @@ def create_app(test_config=None):
     @app.route('/contact')
     def contact():
         return render_template('contact.html')
+
+    @app.route('/callback')
+    def callback_handling():
+        return auth.callback_handling(auth0)
+
+    @app.route('/login')
+    def login():
+        return auth.login(auth0)
+
+    @app.route('/dashboard')
+    @auth.requires_auth
+    def dashboard():
+        return auth.dashboard()
+
+    @app.route('/logout')
+    def logout():
+        return auth.logout(auth0)
 
     @app.route('/webtest')
     def web_test():
@@ -173,12 +211,6 @@ def create_app(test_config=None):
             del flask.session['credentials']
         return ('Credentials have been cleared.<br><br>')
 
-    #from . import db
-    #db.init_app(app)
-
-    #from . import auth
-    #app.register_blueprint(auth.bp)
-
     def credentials_to_dict(credentials):
         return {
             'token': credentials.token,
@@ -188,16 +220,5 @@ def create_app(test_config=None):
             'client_secret': credentials.client_secret,
             'scopes': credentials.scopes
         }
-
-
-    #if __name__ == '__main__':
-        # When running locally, disable OAuthlib's HTTPs verification.
-        # ACTION ITEM for developers:
-        #     When running in production *do not* leave this option enabled.
-        #os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-
-        # Specify a hostname and port that are set as a valid redirect URI
-        # for your API project in the Google API Console.
-        #app.run('localhost', 8080, debug=True)
 
     return app
