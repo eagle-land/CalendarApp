@@ -1,0 +1,31 @@
+
+{% extends 'base.html' %}
+
+{% block title %} About {% endblock %}
+
+{% block content %}
+
+<h1> Here is a calendar example: </h1>
+<body>
+
+    <python>   
+
+    import calendar 
+    
+    hc = calendar.HTMLCalendar(calendar.SUNDAY) #printing calendar in HTML format
+    str = hc.formatmonth(2019, 2) #formatting into the year 2019 and month of Februrary
+    print(str) #printing the calendar
+
+    for i in c.itermonthdays(2025,4): #loop over days of the month
+        print i
+
+
+
+    </python>
+
+
+
+
+</body>
+
+{% endblock %}
