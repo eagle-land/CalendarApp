@@ -4,6 +4,7 @@ from functools import wraps
 import json
 from os import environ as env
 from werkzeug.exceptions import HTTPException
+import http.client
 
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask
@@ -66,6 +67,9 @@ def callback_handling(auth0):
     auth0.authorize_access_token()
     resp = auth0.get('userinfo')
     userinfo = resp.json()
+    userID = userinfo["sub"]
+    print(userID)
+    #mySql_output(userID)
 
     # Store the user information in flask session.
     session[constants.JWT_PAYLOAD] = userinfo
@@ -88,6 +92,38 @@ def logout(auth0):
     return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
 
 def dashboard():
+
     return render_template('dashboard.html',
                            userinfo=session[constants.PROFILE_KEY],
                            userinfo_pretty=json.dumps(session[constants.JWT_PAYLOAD], indent=4))
+
+def mySql_output(userID):
+    #call auth0 api for user json
+    accessToken = generate_access_token()
+    print(accessToken)
+    conn = http.client.HTTPSConnection("shared-skies.auth0.com")
+    
+    bearer = "Bearer " + accessToken
+    headers = { 'authorization': bearer }
+
+    
+    requestText = "/shared-skies.auth0.com/api/v2/users/" + userID
+    conn.request("GET", requestText, headers=headers)
+
+    res = conn.getresponse()
+    data = res.read()
+
+    print(data.decode("utf-8"))
+
+    #still need to output data to mysql table
+
+def generate_access_token():
+    conn = http.client.HTTPSConnection("shared-skies.auth0.com")
+    payload = "{\"client_id\":\"F2d17N80wx3AlRKW8ZdEdItmktPUmDgR\",\"client_secret\":\"XNRzQrSkN0J30Xgh2L36LkGR-fJ6h4z0xigAUk7rnixyadc9TZOuptCvzipEmRka\",\"audience\":\"https://shared-skies.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}"
+    headers = { 'content-type': "application/json" }
+    conn.request("POST", "/oauth/token", payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    authTokenResponseString = data.decode("utf-8")
+    authJson = json.loads(authTokenResponseString)
+    return authJson["access_token"]
