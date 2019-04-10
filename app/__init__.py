@@ -76,6 +76,10 @@ def create_app(test_config=None):
     def contact():
         return render_template('contact.html')
 
+    @app.route('/calendar')
+    def calendar():
+        return render_template('calendar.html')
+
     @app.route('/callback')
     def callback_handling():
         return auth.callback_handling(auth0)
@@ -105,8 +109,8 @@ def create_app(test_config=None):
         calendar = googleapiclient.discovery.build(
             API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
-        now = "2019-03-12T00:00:00.0-04:00"
-        end = "2019-03-19T00:00:00.0-04:00"
+        now = "2019-04-10T00:00:00.0-04:00"
+        end = "2019-04-17T00:00:00.0-04:00"
         body = {
             "timeMin": now,
             "timeMax": end,
