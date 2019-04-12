@@ -5,6 +5,7 @@ import json
 from os import environ as env
 from werkzeug.exceptions import HTTPException
 import http.client
+import mysql.connector
 
 from dotenv import load_dotenv, find_dotenv
 from flask import Flask
@@ -68,8 +69,7 @@ def callback_handling(auth0):
     resp = auth0.get('userinfo')
     userinfo = resp.json()
     userID = userinfo["sub"]
-    print(userID)
-    #mySql_output(userID)
+
 
     # Store the user information in flask session.
     session[constants.JWT_PAYLOAD] = userinfo
@@ -78,6 +78,8 @@ def callback_handling(auth0):
         'name': userinfo['name'],
         'picture': userinfo['picture']
     }
+    #needs to go to webtest to get credentials from google and store info in database
+    mySql_output()
     return redirect('/dashboard')
 
 def login(auth0):
@@ -97,25 +99,26 @@ def dashboard():
                            userinfo=session[constants.PROFILE_KEY],
                            userinfo_pretty=json.dumps(session[constants.JWT_PAYLOAD], indent=4))
 
-def mySql_output(userID):
-    #call auth0 api for user json
-    accessToken = generate_access_token()
-    print(accessToken)
-    conn = http.client.HTTPSConnection("shared-skies.auth0.com")
+def mySql_output():
+    connection = mysql.connector.connect(
+            user='eagleland', password='eagleland',
+            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
+            port=3306, database = 'eaglelandDB')
+    mycursor = connection.cursor()
+    googleToken = session['credentials']['token']
+    googleRefreshToken = session['credentials']['refresh_token']
+    userID = session['jwt_payload']['sub']
+    nickname = session['jwt_payload']['nickname']
     
-    bearer = "Bearer " + accessToken
-    headers = { 'authorization': bearer }
+    #need to add method to verify entry doesnt exist yet, otherwise causes errors
+    SQLquery = "INSERT INTO user(google_token, google_refresh_token, ID, nickname) VALUES (%s, %s, %s, %s)"
+    values = (googleToken, googleRefreshToken, userID, nickname)
 
-    
-    requestText = "/shared-skies.auth0.com/api/v2/users/" + userID
-    conn.request("GET", requestText, headers=headers)
+    mycursor.execute(SQLquery, values)
+    connection.commit()
+    mycursor.close
+    print('data sent to amazon RDS')
 
-    res = conn.getresponse()
-    data = res.read()
-
-    print(data.decode("utf-8"))
-
-    #still need to output data to mysql table
 
 def generate_access_token():
     conn = http.client.HTTPSConnection("shared-skies.auth0.com")
