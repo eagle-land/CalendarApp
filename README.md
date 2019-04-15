@@ -14,7 +14,7 @@
 - Bryce Benjamin bbenjam5@kent.edu
 - Jacob Weidokal jweidoka@kent.edu
 - Jared Anderson jande135@kent.edu
-- Nathan Hahn
+- Nathan Hahn nhahn3@kent.edu
 ### Test Engineers
 - Jessica Warren jwarre24@kent.edu
 - Luke Rinehart lrineha1@kent.edu
