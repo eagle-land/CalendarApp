@@ -102,14 +102,16 @@ def dashboard():
 
 
 def generate_access_token():
+    #call to get access token from auth0 to use their "management API"
     conn = http.client.HTTPSConnection("shared-skies.auth0.com")
-    payload = "{\"client_id\":\"F2d17N80wx3AlRKW8ZdEdItmktPUmDgR\",\"client_secret\":\"XNRzQrSkN0J30Xgh2L36LkGR-fJ6h4z0xigAUk7rnixyadc9TZOuptCvzipEmRka\",\"audience\":\"https://shared-skies.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}"
+    payload = "{\"client_id\":\"%s\",\"client_secret\":\"%s\",\"audience\":\"https://shared-skies.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}" % (constants.AUTH0_CLIENT_ID, constants.AUTH0_CLIENT_SECRET)
     headers = { 'content-type': "application/json" }
     conn.request("POST", "/oauth/token", payload, headers)
     res = conn.getresponse()
     data = res.read()
     authTokenResponseString = data.decode("utf-8")
     authJson = json.loads(authTokenResponseString)
+    #returns the access token
     return authJson["access_token"]
 
 
@@ -120,15 +122,15 @@ def mySql_output():
             port=3306, database = 'eaglelandDB')
     mycursor = connection.cursor()
 
-    #api call to get user information
+    #sets user information variables
     googleToken = session['credentials']['token']
     googleRefreshToken = session['credentials']['refresh_token']
     userID = session['jwt_payload']['sub']
     nickname = session['jwt_payload']['nickname']
-    
+    #query to add data into table
     SQLquery = "REPLACE INTO user(google_token, google_refresh_token, ID, nickname) VALUES (%s, %s, %s, %s)"
     values = (googleToken, googleRefreshToken, userID, nickname)
-
+    #executes query and commits it to database
     mycursor.execute(SQLquery, values)
     connection.commit()
     mycursor.close
@@ -140,11 +142,12 @@ def check_user_exists():
             host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
             port=3306, database = 'eaglelandDB')
     mycursor = connection.cursor()
+    #query to check if ID exists in our database
     query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.user WHERE ID = "%s")' % (session['jwt_payload']['sub'])
     mycursor.execute(query)
     result = mycursor.fetchone()
     mycursor.close
-    print(result[0] == 1)
+    #returns boolean value(true if user exists, else false)
     return (result[0] == 1)
 
 def load_database_creds():
@@ -153,15 +156,16 @@ def load_database_creds():
             host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
             port=3306, database = 'eaglelandDB')
     mycursor = connection.cursor()
+    #query to get user credentials 
     query = 'SELECT * FROM eaglelandDB.user WHERE ID = "%s"' % (session['jwt_payload']['sub'])
     mycursor.execute(query)
     result = mycursor.fetchone()
     mycursor.close
-
+    #extracts token and refresh token from SQL response
     token = result[2]
     refreshToken = result[3]
 
-
+    #gets secret info from client secret file and stores credentials in flask session
     with open('client_secret.json') as json_file:  
         data = json.load(json_file)
     session['credentials'] = {
