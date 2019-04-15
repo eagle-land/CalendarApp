@@ -99,8 +99,18 @@ def create_app(test_config=None):
 
     @app.route('/webtest')
     def web_test():
+        print(session)
         if 'credentials' not in flask.session:
-            return flask.redirect('authorize')
+            print('credentials werent in flask session')
+            if (auth.check_user_exists() == True):
+                auth.load_database_creds()
+            else:
+                return flask.redirect('authorize')
+    
+        
+        if (auth.check_user_exists() == False):
+            auth.mySql_output()
+
 
         # Load credentials from the session.
         credentials = google.oauth2.credentials.Credentials(

@@ -79,8 +79,8 @@ def callback_handling(auth0):
         'picture': userinfo['picture']
     }
     #needs to go to webtest to get credentials from google and store info in database
-    mySql_output()
-    return redirect('/dashboard')
+
+    return redirect('/webtest')
 
 def login(auth0):
     #env['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -99,25 +99,6 @@ def dashboard():
                            userinfo=session[constants.PROFILE_KEY],
                            userinfo_pretty=json.dumps(session[constants.JWT_PAYLOAD], indent=4))
 
-def mySql_output():
-    connection = mysql.connector.connect(
-            user='eagleland', password='eagleland',
-            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
-            port=3306, database = 'eaglelandDB')
-    mycursor = connection.cursor()
-    googleToken = session['credentials']['token']
-    googleRefreshToken = session['credentials']['refresh_token']
-    userID = session['jwt_payload']['sub']
-    nickname = session['jwt_payload']['nickname']
-    
-    #need to add method to verify entry doesnt exist yet, otherwise causes errors
-    SQLquery = "INSERT INTO user(google_token, google_refresh_token, ID, nickname) VALUES (%s, %s, %s, %s)"
-    values = (googleToken, googleRefreshToken, userID, nickname)
-
-    mycursor.execute(SQLquery, values)
-    connection.commit()
-    mycursor.close
-    print('data sent to amazon RDS')
 
 
 def generate_access_token():
@@ -130,3 +111,64 @@ def generate_access_token():
     authTokenResponseString = data.decode("utf-8")
     authJson = json.loads(authTokenResponseString)
     return authJson["access_token"]
+
+
+def mySql_output():
+    connection = mysql.connector.connect(
+            user='eagleland', password='eagleland',
+            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
+            port=3306, database = 'eaglelandDB')
+    mycursor = connection.cursor()
+
+    #api call to get user information
+    googleToken = session['credentials']['token']
+    googleRefreshToken = session['credentials']['refresh_token']
+    userID = session['jwt_payload']['sub']
+    nickname = session['jwt_payload']['nickname']
+    
+    SQLquery = "REPLACE INTO user(google_token, google_refresh_token, ID, nickname) VALUES (%s, %s, %s, %s)"
+    values = (googleToken, googleRefreshToken, userID, nickname)
+
+    mycursor.execute(SQLquery, values)
+    connection.commit()
+    mycursor.close
+    print('data sent to amazon RDS')
+
+def check_user_exists():
+    connection = mysql.connector.connect(
+            user='eagleland', password='eagleland',
+            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
+            port=3306, database = 'eaglelandDB')
+    mycursor = connection.cursor()
+    query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.user WHERE ID = "%s")' % (session['jwt_payload']['sub'])
+    mycursor.execute(query)
+    result = mycursor.fetchone()
+    mycursor.close
+    print(result[0] == 1)
+    return (result[0] == 1)
+
+def load_database_creds():
+    connection = mysql.connector.connect(
+            user='eagleland', password='eagleland',
+            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
+            port=3306, database = 'eaglelandDB')
+    mycursor = connection.cursor()
+    query = 'SELECT * FROM eaglelandDB.user WHERE ID = "%s"' % (session['jwt_payload']['sub'])
+    mycursor.execute(query)
+    result = mycursor.fetchone()
+    mycursor.close
+
+    token = result[2]
+    refreshToken = result[3]
+
+
+    with open('client_secret.json') as json_file:  
+        data = json.load(json_file)
+    session['credentials'] = {
+        'client_id': data['web']['client_id'],
+        'client_secret': data['web']['client_secret'],
+        'refresh_token': refreshToken,
+        'scopes': ['https://www.googleapis.com/auth/calendar.readonly'],
+        'token': token,
+        'token_uri': 'https://oauth2.googleapis.com/token'
+    }
