@@ -115,7 +115,7 @@ def generate_access_token():
     return authJson["access_token"]
 
 
-def mySql_output():
+def add_to_database():
     connection = mysql.connector.connect(
             user='eagleland', password='eagleland',
             host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
@@ -176,3 +176,57 @@ def load_database_creds():
         'token': token,
         'token_uri': 'https://oauth2.googleapis.com/token'
     }
+def check_if_friends (friendID):
+    connection = mysql.connector.connect(
+            user='eagleland', password='eagleland',
+            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
+            port=3306, database = 'eaglelandDB')
+    mycursor = connection.cursor()
+    #query to return if a user friendship exists
+    query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.friend WHERE user1 = "%s" AND user2 = "%s" AND pending = 0)' % (session['jwt_payload']['sub'], friendID)
+    mycursor.execute(query)
+    result = mycursor.fetchone()
+    mycursor.close
+    #returns true if used is friends with target, else false
+    return (result[0] == 1)
+
+def search_user_in_database(nickname):
+    connection = mysql.connector.connect(
+            user='eagleland', password='eagleland',
+            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
+            port=3306, database = 'eaglelandDB')
+    mycursor = connection.cursor()
+    #query to get user information
+    query = 'SELECT * FROM eaglelandDB.user WHERE nickname = "%s"' % (nickname)
+    mycursor.execute(query)
+    result = mycursor.fetchone()
+    mycursor.close
+    #returns userID, can be rolled into friend request functions
+    return result[0]
+
+def request_friend(friendID):
+    connection = mysql.connector.connect(
+            user='eagleland', password='eagleland',
+            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
+            port=3306, database = 'eaglelandDB')
+    mycursor = connection.cursor()
+    #query to store user friend request and mark it pending
+    query = 'INSERT INTO friend VALUES ("%s", "%s", 1)' % (session['jwt_payload']['sub'], friendID)
+    mycursor.execute(query)
+    query2 = 'INSERT INTO friend VALUES ("%s", "%s", 1)' % (friendID, session['jwt_payload']['sub'])
+    mycursor.execute(query2)
+    mycursor.close
+
+def accept_friend():
+    connection = mysql.connector.connect(
+            user='eagleland', password='eagleland',
+            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
+            port=3306, database = 'eaglelandDB')
+    mycursor = connection.cursor()
+    #query to change pending value to 0 when accepted
+    query = 'REPLACE INTO friend (pending) VALUES (0)'
+    mycursor.execute(query)
+    query2 = 'REPLACE INTO friend (pending) VALUES (0)'
+    mycursor.execute(query2)
+    mycursor.close
+    

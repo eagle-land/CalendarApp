@@ -109,7 +109,7 @@ def create_app(test_config=None):
     
         #if user isn't in database they are added here
         if (auth.check_user_exists() == False):
-            auth.mySql_output()
+            auth.add_to_database()
 
 
         # Load credentials from the session.
