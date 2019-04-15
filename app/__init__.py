@@ -76,6 +76,10 @@ def create_app(test_config=None):
     def contact():
         return render_template('contact.html')
 
+    @app.route('/calendar')
+    def calendar():
+        return render_template('calendar.html')
+
     @app.route('/callback')
     def callback_handling():
         return auth.callback_handling(auth0)

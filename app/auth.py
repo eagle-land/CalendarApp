@@ -68,7 +68,7 @@ def callback_handling(auth0):
     auth0.authorize_access_token()
     resp = auth0.get('userinfo')
     userinfo = resp.json()
-    userID = userinfo["sub"]
+    #userID = userinfo['sub']
 
 
     # Store the user information in flask session.
@@ -117,9 +117,9 @@ def generate_access_token():
 
 def add_to_database():
     connection = mysql.connector.connect(
-            user='eagleland', password='eagleland',
-            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
-            port=3306, database = 'eaglelandDB')
+            user=constants.USER, password=constants.PASSWORD,
+            host=constants.HOST,
+            port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
 
     #sets user information variables
@@ -139,9 +139,9 @@ def add_to_database():
 #method uses ID in session to verify existence in table
 def check_user_exists():
     connection = mysql.connector.connect(
-            user='eagleland', password='eagleland',
-            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
-            port=3306, database = 'eaglelandDB')
+        user=constants.USER, password=constants.PASSWORD,
+        host=constants.HOST,
+        port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     #query to check if ID exists in our database
     query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.user WHERE ID = "%s")' % (session['jwt_payload']['sub'])
@@ -154,9 +154,9 @@ def check_user_exists():
 #this function will be useful when users are searching for friends via nickname
 def check_user_exists_nickname(nickname):
     connection = mysql.connector.connect(
-            user='eagleland', password='eagleland',
-            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
-            port=3306, database = 'eaglelandDB')
+        user=constants.USER, password=constants.PASSWORD,
+        host=constants.HOST,
+        port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     #query to check if ID exists in our database
     query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.user WHERE nickname = "%s")' % (nickname)
@@ -168,9 +168,9 @@ def check_user_exists_nickname(nickname):
 
 def load_database_creds():
     connection = mysql.connector.connect(
-            user='eagleland', password='eagleland',
-            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
-            port=3306, database = 'eaglelandDB')
+        user=constants.USER, password=constants.PASSWORD,
+        host=constants.HOST,
+        port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     #query to get user credentials 
     query = 'SELECT * FROM eaglelandDB.user WHERE ID = "%s"' % (session['jwt_payload']['sub'])
@@ -194,9 +194,9 @@ def load_database_creds():
     }
 def check_if_friends (friendID):
     connection = mysql.connector.connect(
-            user='eagleland', password='eagleland',
-            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
-            port=3306, database = 'eaglelandDB')
+        user=constants.USER, password=constants.PASSWORD,
+        host=constants.HOST,
+        port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     #query to return if a user friendship exists
     query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.friend WHERE user1 = "%s" AND user2 = "%s" AND pending = 0)' % (session['jwt_payload']['sub'], friendID)
@@ -208,9 +208,9 @@ def check_if_friends (friendID):
 
 def search_user_in_database(nickname):
     connection = mysql.connector.connect(
-            user='eagleland', password='eagleland',
-            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
-            port=3306, database = 'eaglelandDB')
+        user=constants.USER, password=constants.PASSWORD,
+        host=constants.HOST,
+        port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     #query to get user information
     query = 'SELECT * FROM eaglelandDB.user WHERE nickname = "%s"' % (nickname)
@@ -222,9 +222,9 @@ def search_user_in_database(nickname):
 
 def request_friend(friendID):
     connection = mysql.connector.connect(
-            user='eagleland', password='eagleland',
-            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
-            port=3306, database = 'eaglelandDB')
+        user=constants.USER, password=constants.PASSWORD,
+        host=constants.HOST,
+        port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     #query to store user friend request and mark it pending
     query = 'INSERT INTO friend VALUES ("%s", "%s", 1)' % (session['jwt_payload']['sub'], friendID)
@@ -236,9 +236,9 @@ def request_friend(friendID):
 
 def accept_friend():
     connection = mysql.connector.connect(
-            user='eagleland', password='eagleland',
-            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
-            port=3306, database = 'eaglelandDB')
+        user=constants.USER, password=constants.PASSWORD,
+        host=constants.HOST,
+        port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     #query to change pending value to 0 when accepted
     query = 'REPLACE INTO friend (pending) VALUES (0)'
