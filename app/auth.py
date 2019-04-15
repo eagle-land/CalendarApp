@@ -136,6 +136,7 @@ def add_to_database():
     mycursor.close
     print('data sent to amazon RDS')
 
+#method uses ID in session to verify existence
 def check_user_exists():
     connection = mysql.connector.connect(
             user='eagleland', password='eagleland',
@@ -144,6 +145,21 @@ def check_user_exists():
     mycursor = connection.cursor()
     #query to check if ID exists in our database
     query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.user WHERE ID = "%s")' % (session['jwt_payload']['sub'])
+    mycursor.execute(query)
+    result = mycursor.fetchone()
+    mycursor.close
+    #returns boolean value(true if user exists, else false)
+    return (result[0] == 1)
+
+#this function will be useful when users are searching for friends via nickname
+def check_user_exists_nickname(nickname):
+    connection = mysql.connector.connect(
+            user='eagleland', password='eagleland',
+            host='eaglelanddb.cfvr1klcoyxo.us-east-1.rds.amazonaws.com',
+            port=3306, database = 'eaglelandDB')
+    mycursor = connection.cursor()
+    #query to check if ID exists in our database
+    query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.user WHERE nickname = "%s")' % (nickname)
     mycursor.execute(query)
     result = mycursor.fetchone()
     mycursor.close
