@@ -136,7 +136,7 @@ def add_to_database():
     mycursor.close
     print('data sent to amazon RDS')
 
-#method uses ID in session to verify existence
+#method uses ID in session to verify existence in table
 def check_user_exists():
     connection = mysql.connector.connect(
             user='eagleland', password='eagleland',
@@ -231,6 +231,7 @@ def request_friend(friendID):
     mycursor.execute(query)
     query2 = 'INSERT INTO friend VALUES ("%s", "%s", 1)' % (friendID, session['jwt_payload']['sub'])
     mycursor.execute(query2)
+    connection.commit()
     mycursor.close
 
 def accept_friend():
@@ -244,5 +245,7 @@ def accept_friend():
     mycursor.execute(query)
     query2 = 'REPLACE INTO friend (pending) VALUES (0)'
     mycursor.execute(query2)
+    connection.commit()
     mycursor.close
+
     
