@@ -11,3 +11,4 @@ try:
 
 finally:
     browser.quit()
+    
