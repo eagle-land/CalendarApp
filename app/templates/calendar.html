@@ -1,31 +1,41 @@
 
 {% extends 'base.html' %}
 
-{% block title %} About {% endblock %}
+{% block title %} Calendar {% endblock %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='fullCalendar/core/main.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fullCalendar/daygrid/main.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fullCalendar/timegrid/main.min.css') }}">
+{% endblock %}
+
+{% block headScript %}
+    <script src="{{ url_for('static', filename='fullCalendar/core/main.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='fullCalendar/daygrid/main.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='fullCalendar/timegrid/main.min.js') }}"></script>
+{% endblock %}
+
+{% block script %}
+    <script>
+
+        $(document).ready(function() {
+            var $calendarEl = $('#calendar');
+
+            var calendar = new FullCalendar.Calendar($calendarEl, {
+                plugins: [ 'timeGrid' ],
+                defaultView: 'timeGridWeek'
+            });
+
+            calendar.render();
+        });
+
+    </script>
+{% endblock %}
 
 {% block content %}
 
-<h1> Here is a calendar example: </h1>
-<body>
+    <h1>Calendar Page</h1>
 
-    <python>   
-
-    import calendar 
-    
-    hc = calendar.HTMLCalendar(calendar.SUNDAY) #printing calendar in HTML format
-    str = hc.formatmonth(2019, 2) #formatting into the year 2019 and month of Februrary
-    print(str) #printing the calendar
-
-    for i in c.itermonthdays(2025,4): #loop over days of the month
-        print i
-
-
-
-    </python>
-
-
-
-
-</body>
+    <div id="calendar"></div>
 
 {% endblock %}
