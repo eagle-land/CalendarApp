@@ -32,23 +32,6 @@ AUTH0_AUDIENCE = constants.AUTH0_AUDIENCE
 if AUTH0_AUDIENCE is '':
     AUTH0_AUDIENCE = AUTH0_BASE_URL + '/userinfo'
 
-#app = Flask(__name__)
-"""
-oauth = OAuth(app)
-
-auth0 = oauth.register(
-    'auth0',
-    client_id='F2d17N80wx3AlRKW8ZdEdItmktPUmDgR',
-    client_secret='XNRzQrSkN0J30Xgh2L36LkGR-fJ6h4z0xigAUk7rnixyadc9TZOuptCvzipEmRka',
-    api_base_url='https://shared-skies.auth0.com',
-    access_token_url='https://shared-skies.auth0.com/oauth/token',
-    authorize_url='https://shared-skies.auth0.com/authorize',
-    client_kwargs={
-        'scope': 'openid profile',
-    },
-)
-"""
-
 def handle_auth_error(ex):
     response = jsonify(message=str(ex))
     response.status_code = (ex.code if isinstance(ex, HTTPException) else 500)
@@ -68,7 +51,6 @@ def callback_handling(auth0):
     auth0.authorize_access_token()
     resp = auth0.get('userinfo')
     userinfo = resp.json()
-    #userID = userinfo['sub']
 
 
     # Store the user information in flask session.
