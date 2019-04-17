@@ -1,4 +1,4 @@
-from . import calendar_auth
+import app.calendar_auth as calendar_auth
 
 class Event:
     def __init__(self, startdatetime: str, enddatetime: str):
