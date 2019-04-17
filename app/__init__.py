@@ -94,15 +94,16 @@ def create_app(test_config=None):
 
     @app.route('/webtest')
     def web_test():
-        start = "2019-04-15T00:00:00.0-04:00"
-        end = "2019-04-21T00:00:00.0-04:00"
+
+        start = "2019-04-15T00:00:00-04:00"
+        end = "2019-04-21T00:00:00-04:00"
         timezone = "America/New_York"
 
         usercalendar = calendar.get_calendar(start, end, timezone)
 
         freebusy_string = ""
         for event in usercalendar:
-            freebusy_string += event.toString('start') + ' - ' + event.toString('end') + '<br />'
+            freebusy_string += event.starttime + ' - ' + event.endtime + '<br />'
 
         return freebusy_string
 
