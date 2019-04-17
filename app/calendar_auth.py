@@ -12,17 +12,7 @@ API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
 
 def get_freebusy(body):
-    if 'credentials' not in flask.session:
-        # checks if user is in database, pulls credentials if so
-        if (auth.check_user_exists() == True):
-            auth.load_database_creds()
-        else:
-            # otherwise has user authorize with google
-            return flask.redirect('authorize')
 
-    # if user isn't in database they are added here
-    if (auth.check_user_exists() == False):
-        auth.add_to_database()
 
     # Load credentials from the session.
     credentials = google.oauth2.credentials.Credentials(
@@ -94,7 +84,7 @@ def oauth2callback():
     credentials = flow.credentials
     flask.session['credentials'] = credentials_to_dict(credentials)
 
-    return flask.redirect(flask.url_for('web_test'))
+    return flask.redirect(flask.url_for('load_credentials'))
 
 def revoke():
     if 'credentials' not in flask.session:

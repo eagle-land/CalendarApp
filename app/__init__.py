@@ -79,6 +79,10 @@ def create_app(test_config=None):
     def callback_handling():
         return auth.callback_handling(auth0)
 
+    @app.route('/credentials')
+    def load_credentials():
+        return auth.load_credentials()
+
     @app.route('/login')
     def login():
         return auth.login(auth0)
