@@ -62,7 +62,23 @@ def callback_handling(auth0):
     }
     #needs to go to webtest to get credentials from google and store info in database
 
+    return redirect('/credentials')
+
+
+def load_credentials():
+    if 'credentials' not in session:
+        # checks if user is in database, pulls credentials if so
+        if (check_user_exists() == True):
+            load_database_creds()
+        else:
+            # otherwise has user authorize with google
+            return redirect('/authorize')
+
+    # if user isn't in database they are added here
+    if (check_user_exists() == False):
+        add_to_database()
     return redirect('/webtest')
+
 
 def login(auth0):
     #env['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
