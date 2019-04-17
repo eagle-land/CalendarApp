@@ -246,4 +246,35 @@ def accept_friend():
     connection.commit()
     mycursor.close
 
+def get_friends(user):
+    connection = mysql.connector.connect(
+        user=constants.USER, password=constants.PASSWORD,
+        host=constants.HOST,
+        port=constants.PORT, database=constants.DATABASE)
+    mycursor = connection.cursor()
+    #query to change pending value to 0 when accepted
+    query = 'SELECT user1 from friend where user1 = user AND pending = 0'
+    mycursor.execute(query)
+    friendlist = []
+    for x in mycursor.fetchall():
+        friendlist.append(x[0])
+    #returns list of accepted friend userIDs from friend table
+    return friendlist
+
+def get_pending_friends(user):
+    connection = mysql.connector.connect(
+        user=constants.USER, password=constants.PASSWORD,
+        host=constants.HOST,
+        port=constants.PORT, database=constants.DATABASE)
+    mycursor = connection.cursor()
+    #query to change pending value to 0 when accepted
+    query = 'SELECT user1 from friend where user1 = user AND pending = 1'
+    mycursor.execute(query)
+    friendlist = []
+    for x in mycursor.fetchall():
+        friendlist.append(x[0])
+    #returns list of pending friend userIDs from friend table
+    return friendlist
+    
+
     
