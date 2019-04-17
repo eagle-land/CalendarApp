@@ -218,6 +218,30 @@ def get_calendar(start, end, timezone):
     return Calendar(userevents)
 
 
+def merge_calendars(calendar1, calendar2):
+    allevents = []
+    for event1 in calendar1:
+        for event2 in calendar2:
+            if event2.starttime <= event1.starttime and event2.endtime <= event1.endtime:
+                event = Event(event2.starttime, event1.endtime)
+                allevents.append(event)
+            elif event2.starttime > event1.starttime and event2.endtime > event1.endtime:
+                event = Event(event1.starttime, event2.endtime)
+                allevents.append(event)
+            elif event2.starttime < event1.starttime and event2.endtime > event1.endtime:
+                event = Event(event2.starttime, event2.endtime)
+                allevents.append(event)
+            elif event1.starttime < event2.starttime and event1.endtime > event1.endtime:
+                event = Event(event1.starttime, event1.endtime)
+                allevents.append(event)
+            else:
+                event = Event(event2.starttime, event2.endtime)
+                allevents.append(event)
+        #event = Event(event1.starttime, event1.endtime)
+        #allevents.append(event)
+    return Calendar(allevents)
+
+
 def get_shared_freetimes(rangestart, rangeend, calendar1, calendar2):
     freetimes = []
     index = 0
@@ -229,8 +253,10 @@ def get_shared_freetimes(rangestart, rangeend, calendar1, calendar2):
         if calendar2[index].starttime <= freetimestart < calendar2[index].endtime:
             freetimestart = calendar2[index].endtime
 
+        print(index + 1)
+        print (len(calendar1))
         # Check if both calendars have another event.
-        if index + 1 < len(calendar1) and index + 1 < len(calendar2):
+        if index + 1 < len(calendar1) and index + 1 <= len(calendar2):
             # If calendar 1's next event comes before calendar 2's,
             # or they start at the same time,
             # make the end of the freetime period the start of calendar 1's next event.
