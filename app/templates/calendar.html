@@ -16,20 +16,7 @@
 {% endblock %}
 
 {% block script %}
-    <script>
-
-        $(document).ready(function() {
-            var $calendarEl = $('#calendar');
-
-            var calendar = new FullCalendar.Calendar($calendarEl, {
-                plugins: [ 'timeGrid' ],
-                defaultView: 'timeGridWeek'
-            });
-
-            calendar.render();
-        });
-
-    </script>
+    <script src="{{ url_for('static', filename='js/calendar.js')}}"></script>
 {% endblock %}
 
 {% block content %}
