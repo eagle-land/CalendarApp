@@ -3,7 +3,14 @@ $(document).ready(function() {
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
         plugins: [ 'timeGrid' ],
-        defaultView: 'timeGridWeek'
+        // Defaults to weekly view with times
+        defaultView: 'timeGridWeek',
+        // Buttons at the top of calendar
+        header: {
+            left: 'timeGridWeek,timeGridDay',
+            center: 'title',
+            right: 'today prev,next'
+        }
     });
 
     calendar.render();

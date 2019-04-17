@@ -7,22 +7,76 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='fullCalendar/core/main.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='fullCalendar/daygrid/main.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='fullCalendar/timegrid/main.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='fullCalendar/bootstrap/main.min.css') }}">
 {% endblock %}
 
 {% block headScript %}
     <script src="{{ url_for('static', filename='fullCalendar/core/main.min.js') }}"></script>
     <script src="{{ url_for('static', filename='fullCalendar/daygrid/main.min.js') }}"></script>
     <script src="{{ url_for('static', filename='fullCalendar/timegrid/main.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='fullCalendar/bootstrap/main.min.js') }}"></script>
 {% endblock %}
+
+<!------------------ Calendar Page HTML Content ------------------------------->
+{% block content %}
+    <div class="container">
+        <br>
+        <div class="row">
+            <div id="calendar" class="col-md-8"></div>
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <p>Click on a friend to see free times</p>
+                <div class="list-group">
+                    <button type="button" class="list-group-item list-group-item-action">
+                        Friend 1
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action">
+                        Friend 2
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action">
+                        Friend 3
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action">
+                        Friend 4
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action">
+                        etc...
+                    </button>
+                </div>
+            </div>
+        </div>
+        <br>
+    </div>
+    
+    
+
+{% endblock %}
+<!---------------------------------------------------------------------------->
 
 {% block script %}
-    <script src="{{ url_for('static', filename='js/calendar.js')}}"></script>
-{% endblock %}
+    <script>
+        $(document).ready(function() {
+            var calendarEl = document.getElementById('calendar');
+        
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                plugins: [ 'timeGrid', 'bootstrap' ],
+                // Defaults to weekly view with times
+                defaultView: 'timeGridWeek',
+                // Buttons at the top of calendar
+                header: {
+                    left: 'timeGridWeek,timeGridDay',
+                    center: 'title',
+                    right: 'today prev,next'
+                },
+                // Use bootstrap 4 for theming
+                themeSystem: 'bootstrap',
+                // Line displaying the time right now
+                nowIndicator: true,
 
-{% block content %}
-
-    <h1>Calendar Page</h1>
-
-    <div id="calendar"></div>
-
+            });
+        
+            calendar.render();
+        });
+        
+    </script>
 {% endblock %}
