@@ -135,14 +135,14 @@ def add_to_database():
     print('data sent to amazon RDS')
 
 #method uses ID in session to verify existence in table
-def check_user_exists():
+def check_user_exists(userID):
     connection = mysql.connector.connect(
         user=constants.USER, password=constants.PASSWORD,
         host=constants.HOST,
         port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     #query to check if ID exists in our database
-    query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.user WHERE ID = "%s")' % (session['jwt_payload']['sub'])
+    query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.user WHERE ID = "%s")' % (userID)
     mycursor.execute(query)
     result = mycursor.fetchone()
     mycursor.close
@@ -190,14 +190,14 @@ def load_database_creds():
         'token': token,
         'token_uri': 'https://oauth2.googleapis.com/token'
     }
-def check_if_friends (friendID):
+def check_if_friends (userID, friendID):
     connection = mysql.connector.connect(
         user=constants.USER, password=constants.PASSWORD,
         host=constants.HOST,
         port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     #query to return if a user friendship exists
-    query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.friend WHERE user1 = "%s" AND user2 = "%s" AND pending = 0)' % (session['jwt_payload']['sub'], friendID)
+    query = 'SELECT EXISTS(SELECT * FROM eaglelandDB.friend WHERE user1 = "%s" AND user2 = "%s" AND pending = 0)' % (userID, friendID)
     mycursor.execute(query)
     result = mycursor.fetchone()
     mycursor.close
@@ -257,7 +257,7 @@ def get_friends(user):
     mycursor.execute(query)
     friendlist = []
     for x in mycursor.fetchall():
-        friendlist.append(x[0])
+        friendlist.append(x[1])
     #returns list of accepted friend userIDs from friend table
     return friendlist
 
@@ -272,7 +272,7 @@ def get_pending_friends(user):
     mycursor.execute(query)
     friendlist = []
     for x in mycursor.fetchall():
-        friendlist.append(x[0])
+        friendlist.append(x[1])
     #returns list of pending friend userIDs from friend table
     return friendlist
     
