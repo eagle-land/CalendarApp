@@ -3,6 +3,8 @@
 from functools import wraps
 import json
 from os import environ as env
+import os
+import sys
 from werkzeug.exceptions import HTTPException
 import http.client
 import mysql.connector
@@ -18,6 +20,12 @@ from authlib.flask.client import OAuth
 from six.moves.urllib.parse import urlencode
 
 from . import constants
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+if sys.platform == 'win32':
+    CLIENT_SECRETS_FILE = basedir+'\\\\client_secret.json'
+else:
+    CLIENT_SECRETS_FILE = basedir + '/client_secret.json'
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
@@ -180,7 +188,7 @@ def load_database_creds():
     refreshToken = result[3]
 
     #gets secret info from client secret file and stores credentials in flask session
-    with open('client_secret.json') as json_file:  
+    with open(CLIENT_SECRETS_FILE) as json_file:  
         data = json.load(json_file)
     session['credentials'] = {
         'client_id': data['web']['client_id'],

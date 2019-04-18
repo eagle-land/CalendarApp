@@ -4,11 +4,16 @@ import googleapiclient.discovery
 import google_auth_oauthlib.flow
 import google.oauth2.credentials
 import os
+import sys
 
 from . import auth
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-CLIENT_SECRETS_FILE = basedir+'\\\\client_secret.json'
+if sys.platform == 'win32':
+    CLIENT_SECRETS_FILE = basedir+'\\\\client_secret.json'
+else:
+    CLIENT_SECRETS_FILE = basedir + '/client_secret.json'
+    
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
@@ -120,3 +125,15 @@ def credentials_to_dict(credentials):
         'client_secret': credentials.client_secret,
         'scopes': credentials.scopes
     }
+
+def get_platform():
+    platforms = {
+        'linux1' : 'Linux',
+        'linux2' : 'Linux',
+        'darwin' : 'OS X',
+        'win32' : 'Windows'
+    }
+    if sys.platform not in platforms:
+        return sys.platform
+
+    return platforms[sys.platform]
