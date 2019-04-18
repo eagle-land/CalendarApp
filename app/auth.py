@@ -68,14 +68,14 @@ def callback_handling(auth0):
 def load_credentials():
     if 'credentials' not in session:
         # checks if user is in database, pulls credentials if so
-        if (check_user_exists() == True):
+        if (check_user_exists(session['jwt_payload']['sub']) == True):
             load_database_creds()
         else:
             # otherwise has user authorize with google
             return redirect('/authorize')
 
     # if user isn't in database they are added here
-    if (check_user_exists() == False):
+    if (check_user_exists(session['jwt_payload']['sub']) == False):
         add_to_database()
     return redirect('/webtest')
 
