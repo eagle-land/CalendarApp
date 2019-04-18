@@ -3,10 +3,12 @@ import requests
 import googleapiclient.discovery
 import google_auth_oauthlib.flow
 import google.oauth2.credentials
+import os
 
 from . import auth
 
-CLIENT_SECRETS_FILE = 'client_secret.json'
+basedir = os.path.abspath(os.path.dirname(__file__))
+CLIENT_SECRETS_FILE = basedir+'\\\\client_secret.json'
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
