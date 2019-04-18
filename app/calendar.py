@@ -83,67 +83,6 @@ class Event:
         else:
             return 'NULL'
 
-    def minuteAfter(self):
-        year = int(self.endyear)
-        month = int(self.endmonth)
-        day = int(self.endday)
-        hour = int(self.endhour)
-        minute = int(self.endminute)
-        second = self.endsecond
-        offsetsign = self.endoffsetsign
-        offsethour = self.endoffsethour
-        offsetminute = self.endoffsetminute
-
-        minute += 1
-        if minute == 60:
-            minute -= 60
-            hour += 1
-            if hour == 24:
-                hour -= 24
-                day += 1
-                if day == 29 and month == 2 and not isLeapYear(year):
-                    day -= 28
-                    month += 1
-                elif day == 30 and month == 2 and isLeapYear(year):
-                    day -= 29
-                    month += 1
-                elif day == 31 and (month == 4 or month == 6 or month == 9 or month == 11):
-                    day -= 30
-                    month += 1
-                elif day == 32:
-                    day -= 31
-                    month += 1
-                    if month == 13:
-                        month -= 12
-                        year += 1
-
-        year = str(year)
-        month = str(month)
-        day = str(day)
-        hour = str(hour)
-        minute = str(minute)
-
-        if len(month) == 1:
-            month = '0' + month
-        if len(day) == 1:
-            day = '0' + day
-        if len(hour) == 1:
-            hour = '0' + hour
-        if len(minute) == 1:
-            minute = '0' + minute
-
-        return(
-            year + '-' +
-            month + '-' +
-            day + 'T' +
-            hour + ':' +
-            minute + ':' +
-            second +
-            offsetsign +
-            offsethour + ':' +
-            offsetminute
-        )
-
 
 class Calendar:
     def __init__(self, events):
@@ -179,15 +118,6 @@ class Calendar:
         else:
             return True
 
-def isLeapYear(year):
-    if year % 400 == 0:
-        return True
-    if year % 100 == 0:
-        return False
-    if year % 4 == 0:
-        return True
-    else:
-        return False
 
 def get_calendar(start, end, timezone):
     body = {
@@ -218,85 +148,58 @@ def get_calendar(start, end, timezone):
     return Calendar(userevents)
 
 
+def getstarttime(elem):
+    return elem.starttime
+
+
 def merge_calendars(calendar1, calendar2):
-    allevents = []
-    for event1 in calendar1:
-        for event2 in calendar2:
-            if event2.starttime <= event1.starttime and event2.endtime <= event1.endtime:
-                event = Event(event2.starttime, event1.endtime)
-                allevents.append(event)
-            elif event2.starttime > event1.starttime and event2.endtime > event1.endtime:
-                event = Event(event1.starttime, event2.endtime)
-                allevents.append(event)
-            elif event2.starttime < event1.starttime and event2.endtime > event1.endtime:
-                event = Event(event2.starttime, event2.endtime)
-                allevents.append(event)
-            elif event1.starttime < event2.starttime and event1.endtime > event1.endtime:
-                event = Event(event1.starttime, event1.endtime)
-                allevents.append(event)
-            else:
-                event = Event(event2.starttime, event2.endtime)
-                allevents.append(event)
-        #event = Event(event1.starttime, event1.endtime)
-        #allevents.append(event)
+    allevents = calendar1.events
+    for event in calendar2:
+        allevents.append(event)
+
+    allevents.sort(key=getstarttime)
+    index = 0
+    while index + 1 < len(allevents):
+        event1 = allevents[index]
+        event2 = allevents[index + 1]
+        # Event 2 fits inside event1.
+        if event2.starttime >= event1.starttime and event2.endtime <= event1.endtime:
+            allevents.pop(index + 1)
+        # Event2 starts during the duration of event 1 and ends after event 1.
+        elif event1.starttime <= event2.starttime <= event1.endtime < event2.endtime:
+            allevents[index] = Event(event1.starttime, event2.endtime)
+            allevents.pop(index + 1)
+        index += 1
     return Calendar(allevents)
 
 
 def get_shared_freetimes(rangestart, rangeend, calendar1, calendar2):
+    # Merge calendars into one.
+    calendar = merge_calendars(calendar1, calendar2)
+
     freetimes = []
     index = 0
     freetimestart = rangestart
-    while freetimestart < rangeend:
-        # If freetimestart is in the middle of an event on either person's calendar, make it the end of that event.
-        if calendar1[index].starttime <= freetimestart < calendar1[index].endtime:
-            freetimestart = calendar1[index].endtime
-        if calendar2[index].starttime <= freetimestart < calendar2[index].endtime:
-            freetimestart = calendar2[index].endtime
+    for event in calendar:
+        # If freetimestart is in the middle of an event on the calendar, make it the end of that event.
+        if event.starttime <= freetimestart < event.endtime:
+            freetimestart = event.endtime
 
-        print(index + 1)
-        print (len(calendar1))
-        # Check if both calendars have another event.
-        if index + 1 < len(calendar1) and index + 1 <= len(calendar2):
-            # If calendar 1's next event comes before calendar 2's,
-            # or they start at the same time,
-            # make the end of the freetime period the start of calendar 1's next event.
-            if calendar1[index + 1].starttime <= calendar2[index + 1].starttime:
-                freetimeend = calendar1[index + 1].starttime
-                event = Event(freetimestart, freetimeend)
-                freetimes.append(event)
-                index += 1
-                freetimestart = calendar1[index + 1].starttime
-            # If calendar 2's next event comes before calendar 1's,
-            # make the end of the freetime period the start of calendar 2's next event.
-            elif calendar2[index + 1].starttime < calendar1[index + 1].starttime:
-                freetimeend = calendar2[index + 1].starttime
-                event = Event(freetimestart, freetimeend)
-                freetimes.append(event)
-                index += 1
-                freetimestart = calendar2[index + 1].starttime
-        # If only calendar 1 has another event,
-        # make the end of the freetime period the start of its next event.
-        elif index + 1 < len(calendar1):
-            freetimeend = calendar1[index + 1].starttime
+        # If this is not the last event in the calendar, set the end time for the current free event as the start
+        # time of the next event. Then, make the next free event start when the next event ends.
+        if index + 1 < len(calendar):
+            freetimeend = calendar[index + 1].starttime
             event = Event(freetimestart, freetimeend)
-            freetimes.append(event)
-            index += 1
-            freetimestart = calendar1[index + 1].starttime
-        # If only calendar 2 has another event,
-        # make the end of the freetime period the start of its next event.
-        elif index + 1 < len(calendar2):
-            freetimeend = calendar2[index + 1].starttime
-            event = Event(freetimestart, freetimeend)
-            freetimes.append(event)
-            index += 1
-            freetimestart = calendar2[index + 1].starttime
-        # If neither calendar has another event,
-        # make the end of the freetime period the end of the range.
+            freetimestart = calendar[index + 1].endtime
+        # If this is the last event, set the end time for the current free event as the end of the range.
         else:
             freetimeend = rangeend
             event = Event(freetimestart, freetimeend)
+
+        # Make sure we're not creating an event that's 0 minutes long.
+        if not event.starttime == event.endtime:
             freetimes.append(event)
-            freetimestart = rangeend
+        index += 1
 
     # Finished going through all events. Create a new calendar and return it.
     return Calendar(freetimes)

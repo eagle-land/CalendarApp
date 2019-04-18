@@ -1,23 +1,26 @@
 import app.calendar as calendar
 
 def test1():
-    user1events = []
-    event1 = calendar.Event("2019-04-15T11:00:00-04:00", "2019-04-15T11:50:00-04:00")
-    user1events.append(event1)
+    # Example calendar 1
+    user1events = [
+        calendar.Event("2019-04-15T11:00:00-04:00", "2019-04-15T11:50:00-04:00")
+    ]
     calendar1 = calendar.Calendar(user1events)
 
-    user2events = []
-    event2 = calendar.Event("2019-04-15T12:00:00-04:00", "2019-04-15T12:50:00-04:00")
-    user2events.append(event2)
+    # Example calendar 2
+    user2events = [
+        calendar.Event("2019-04-15T12:00:00-04:00", "2019-04-15T12:50:00-04:00")
+    ]
     calendar2 = calendar.Calendar(user2events)
 
-    freeevents = []
-    freeevent = calendar.Event("2019-04-15T11:50:00-04:00", "2019-04-15T12:00:00-04:00")
-    freeevents.append(freeevent)
+    # Correct return value
+    freeevents = [
+        calendar.Event("2019-04-15T11:50:00-04:00", "2019-04-15T12:00:00-04:00")
+    ]
     freecalendar = calendar.Calendar(freeevents)
 
-    rangestart = event1.starttime
-    rangeend = event2.endtime
+    rangestart = "2019-04-15T11:00:00-04:00"
+    rangeend = "2019-04-15T12:50:00-04:00"
     result = calendar.get_shared_freetimes(rangestart, rangeend, calendar1, calendar2)
     result_string =""
     for event in result:
@@ -27,3 +30,4 @@ def test1():
 
 if __name__ == '__main__':
     test1()
+    print("Passed all tests.")
