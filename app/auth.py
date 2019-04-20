@@ -261,11 +261,11 @@ def get_friends(user):
         port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     #query to change pending value to 0 when accepted
-    query = 'SELECT user1 from friend where user1 = user AND pending = 0'
+    query = 'SELECT user2 from friend where user1 = %s AND pending = 0' % (user)
     mycursor.execute(query)
     friendlist = []
     for x in mycursor.fetchall():
-        friendlist.append(x[1])
+        friendlist.append(x[0])
     #returns list of accepted friend userIDs from friend table
     return friendlist
 
@@ -276,11 +276,11 @@ def get_pending_friends(user):
         port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     #query to change pending value to 0 when accepted
-    query = 'SELECT user1 from friend where user1 = user AND pending = 1'
+    query = 'SELECT user2 from friend where user1 = %s AND pending = 1' % (user)
     mycursor.execute(query)
     friendlist = []
     for x in mycursor.fetchall():
-        friendlist.append(x[1])
+        friendlist.append(x[0])
     #returns list of pending friend userIDs from friend table
     return friendlist
     

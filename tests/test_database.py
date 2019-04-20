@@ -1,35 +1,38 @@
+
+#test currently is based on a static path on my local computer.  need changed to relative paths
+import sys
+sys.path.append('C:/Users/adam/Documents/programming/CalendarApp/')
+
 import app.auth as auth
 
 
-def test1():
+def test_1():
     assert auth.check_user_exists('1') == True
 
-def test2():
+def test_2():
     assert auth.check_user_exists_nickname('test') == True
 
-def test3():
+def test_3():
     assert auth.check_if_friends('1', '2') == True
 
-def test4():
-    print(auth.search_user_in_database('test'))
+def test_4():
+    assert auth.search_user_in_database('test') == '1'
 
-def test5():
-    print(auth.get_friends('1'))
+def test_5():
+    assert auth.get_friends('1') == ['2', '3']
 
-def test6():
-    print(auth.get_pending_friends('1'))
-
-
+def test_6():
+    assert auth.get_pending_friends('1') == ['4']
 
 
 
 if __name__ == '__main__':
-    test1()
-    test2()
-    test3()
-    test4()
-    test5()
-    test6()
+    test_1()
+    test_2()
+    test_3()
+    test_4()
+    test_5()
+    test_6()
     print("Passed all database tests.")
 
 
