@@ -18,6 +18,7 @@ SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
 
+
 def get_freebusy(body):
 
 
@@ -49,6 +50,7 @@ def get_freebusy(body):
     #flask.session['credentials'] = credentials_to_dict(credentials)
     return response
 
+
 def authorize():
     # Create flow instance to manage the OAuth 2.0 Authorization Grant Flow steps.
     flow = google_auth_oauthlib.flow.Flow.from_client_secrets_file(
@@ -72,6 +74,7 @@ def authorize():
 
     return flask.redirect(authorization_url)
 
+
 def oauth2callback():
     # Specify the state when creating the flow in the callback so that it can
     # verified in the authorization server response.
@@ -93,6 +96,7 @@ def oauth2callback():
 
     return flask.redirect(flask.url_for('load_credentials'))
 
+
 def revoke():
     if 'credentials' not in flask.session:
         return ('You need to <a href="/authorize">authorize</a> before ' +
@@ -111,10 +115,12 @@ def revoke():
     else:
         return ('An error occurred.')
 
+
 def clear_credentials():
     if 'credentials' in flask.session:
         del flask.session['credentials']
     return ('Credentials have been cleared.<br><br>')
+
 
 def credentials_to_dict(credentials):
     return {
@@ -125,6 +131,7 @@ def credentials_to_dict(credentials):
         'client_secret': credentials.client_secret,
         'scopes': credentials.scopes
     }
+
 
 def get_platform():
     platforms = {

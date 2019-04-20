@@ -1,5 +1,6 @@
 import app.calendar as calendar
 
+
 def test1():
     # Example calendar 1
     user1events = [
@@ -27,6 +28,7 @@ def test1():
         result_string += event.starttime + ' - ' + event.endtime + '\n'
     print(result_string)
     assert result == freecalendar
+
 
 if __name__ == '__main__':
     test1()

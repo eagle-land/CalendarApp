@@ -4,7 +4,8 @@ def test_numbers():
   number2 = 2 + 2
   # Test with assert
   assert number1 == number2
-  
+
+
 def test_string():
   sentence = "Hey there"
   # This should fail

@@ -1,5 +1,6 @@
 import app.calendar_auth as calendar_auth
 
+
 class Event:
     def __init__(self, startdatetime: str, enddatetime: str):
         # startdatetime: '2019-04-10T11:00:00-04:00'

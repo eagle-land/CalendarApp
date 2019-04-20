@@ -1,10 +1,4 @@
-
-#test currently is based on a static path on my local computer.  need changed to relative paths
-import sys
-sys.path.append('C:/Users/adam/Documents/programming/CalendarApp/')
-
 import app.auth as auth
-
 
 def test_1():
     assert auth.check_user_exists('1') == True
@@ -34,5 +28,4 @@ if __name__ == '__main__':
     test_5()
     test_6()
     print("Passed all database tests.")
-
 
