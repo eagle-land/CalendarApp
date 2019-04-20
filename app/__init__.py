@@ -1,7 +1,7 @@
 from __future__ import print_function
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 from authlib.flask.client import OAuth
 import os.path
 
@@ -104,7 +104,8 @@ def create_app(test_config=None):
         end = "2019-04-21T00:00:00-04:00"
         timezone = "America/New_York"
 
-        usercalendar = calendar.get_calendar(start, end, timezone)
+        #usercalendar = calendar.get_calendar(session['jwt_payload']['sub'], start, end, timezone)
+        usercalendar = calendar.compare_user_calendars(session['jwt_payload']['sub'], session['jwt_payload']['sub'], start, end, timezone)
 
         freebusy_string = ""
         for event in usercalendar:

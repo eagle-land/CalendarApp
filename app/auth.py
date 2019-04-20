@@ -63,7 +63,6 @@ def callback_handling(auth0):
     resp = auth0.get('userinfo')
     userinfo = resp.json()
 
-
     # Store the user information in flask session.
     session[constants.JWT_PAYLOAD] = userinfo
     session[constants.PROFILE_KEY] = {
@@ -71,7 +70,7 @@ def callback_handling(auth0):
         'name': userinfo['name'],
         'picture': userinfo['picture']
     }
-    #needs to go to webtest to get credentials from google and store info in database
+    # needs to go to webtest to get credentials from google and store info in database
 
     return redirect('/credentials')
 
@@ -80,7 +79,7 @@ def load_credentials():
     if 'credentials' not in session:
         # checks if user is in database, pulls credentials if so
         if (check_user_exists(session['jwt_payload']['sub']) == True):
-            load_database_creds()
+            session['credentials'] = load_database_creds(session['jwt_payload']['sub'])
         else:
             # otherwise has user authorize with google
             return redirect('/authorize')
@@ -105,7 +104,6 @@ def logout(auth0):
 
 
 def dashboard():
-
     return render_template('dashboard.html',
                            userinfo=session[constants.PROFILE_KEY],
                            userinfo_pretty=json.dumps(session[constants.JWT_PAYLOAD], indent=4))
@@ -179,14 +177,14 @@ def check_user_exists_nickname(nickname):
     return result[0] == 1
 
 
-def load_database_creds():
+def load_database_creds(userid):
     connection = mysql.connector.connect(
         user=constants.USER, password=constants.PASSWORD,
         host=constants.HOST,
         port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     # query to get user credentials
-    query = 'SELECT * FROM eaglelandDB.user WHERE ID = "%s"' % (session['jwt_payload']['sub'])
+    query = 'SELECT * FROM eaglelandDB.user WHERE ID = "%s"' % (userid)
     mycursor.execute(query)
     result = mycursor.fetchone()
     mycursor.close
@@ -197,7 +195,7 @@ def load_database_creds():
     # gets secret info from client secret file and stores credentials in flask session
     with open(CLIENT_SECRETS_FILE) as json_file:  
         data = json.load(json_file)
-    session['credentials'] = {
+    return {
         'client_id': data['web']['client_id'],
         'client_secret': data['web']['client_secret'],
         'refresh_token': refreshToken,

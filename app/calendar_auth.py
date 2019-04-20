@@ -19,29 +19,15 @@ API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
 
 
-def get_freebusy(body):
-
-
+def get_freebusy(userid, body):
     # Load credentials from the session.
+    usercredentials = auth.load_database_creds(userid)
     credentials = google.oauth2.credentials.Credentials(
-        **flask.session['credentials'])
+        **usercredentials)
 
     calendar = googleapiclient.discovery.build(
         API_SERVICE_NAME, API_VERSION, credentials=credentials)
-    """
-    now = "2019-04-07T11:00:00.0-04:00"
-    end = "2019-04-13T00:00:00.0-04:00"
-    body = {
-        "timeMin": now,
-        "timeMax": end,
-        "timeZone": "America/New_York",
-        "items": [
-            {
-                "id": "primary"
-            }
-        ],
-    }
-    """
+
     response = calendar.freebusy().query(body=body).execute()
 
     # Save credentials back to session in case access token was refreshed.
@@ -131,16 +117,3 @@ def credentials_to_dict(credentials):
         'client_secret': credentials.client_secret,
         'scopes': credentials.scopes
     }
-
-
-def get_platform():
-    platforms = {
-        'linux1' : 'Linux',
-        'linux2' : 'Linux',
-        'darwin' : 'OS X',
-        'win32' : 'Windows'
-    }
-    if sys.platform not in platforms:
-        return sys.platform
-
-    return platforms[sys.platform]
