@@ -3,14 +3,17 @@ import app.auth as auth
 
 def test_1():
     assert auth.check_user_exists('1') == True
+    assert auth.check_user_exists('1111') == False
 
 
 def test_2():
     assert auth.check_user_exists_nickname('test') == True
+    assert auth.check_user_exists_nickname('tester') == False
 
 
 def test_3():
     assert auth.check_if_friends('1', '2') == True
+    assert auth.check_if_friends('1', '5') == False
 
 
 def test_4():
