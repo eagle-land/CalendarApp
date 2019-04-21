@@ -9,6 +9,7 @@ from . import auth
 from . import constants
 from . import calendar
 from . import calendar_auth
+from . import database
 
 CLIENT_SECRETS_FILE = 'client_secret.json'
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
