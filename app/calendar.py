@@ -120,7 +120,13 @@ class Calendar:
             return True
 
 
-def get_calendar(start, end, timezone):
+def compare_user_calendars(user1id, user2id, start, end, timezone):
+    calendar1 = get_calendar(user1id, start, end, timezone)
+    calendar2 = get_calendar(user2id, start, end, timezone)
+    return get_shared_freetimes(start, end, calendar1, calendar2)
+
+
+def get_calendar(userid, start, end, timezone):
     body = {
         "timeMin": start,
         "timeMax": end,
@@ -132,7 +138,7 @@ def get_calendar(start, end, timezone):
         ],
     }
 
-    response = calendar_auth.get_freebusy(body)
+    response = calendar_auth.get_freebusy(userid, body)
     if not response:
         print('Error.')
 
@@ -179,9 +185,10 @@ def get_shared_freetimes(rangestart, rangeend, calendar1, calendar2):
     calendar = merge_calendars(calendar1, calendar2)
 
     freetimes = []
-    index = 0
+    index = -1
     freetimestart = rangestart
-    for event in calendar:
+    while index < len(calendar):
+        event = calendar[index]
         # If freetimestart is in the middle of an event on the calendar, make it the end of that event.
         if event.starttime <= freetimestart < event.endtime:
             freetimestart = event.endtime
@@ -190,16 +197,16 @@ def get_shared_freetimes(rangestart, rangeend, calendar1, calendar2):
         # time of the next event. Then, make the next free event start when the next event ends.
         if index + 1 < len(calendar):
             freetimeend = calendar[index + 1].starttime
-            event = Event(freetimestart, freetimeend)
+            freeevent = Event(freetimestart, freetimeend)
             freetimestart = calendar[index + 1].endtime
         # If this is the last event, set the end time for the current free event as the end of the range.
         else:
             freetimeend = rangeend
-            event = Event(freetimestart, freetimeend)
+            freeevent = Event(freetimestart, freetimeend)
 
         # Make sure we're not creating an event that's 0 minutes long.
-        if not event.starttime == event.endtime:
-            freetimes.append(event)
+        if not freeevent.starttime == freeevent.endtime:
+            freetimes.append(freeevent)
         index += 1
 
     # Finished going through all events. Create a new calendar and return it.

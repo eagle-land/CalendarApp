@@ -72,20 +72,32 @@ def check_user_exists_nickname(nickname):
     return result[0] == 1
 
 
-def load_database_creds():
+def load_database_creds(userid):
     connection = mysql.connector.connect(
         user=constants.USER, password=constants.PASSWORD,
         host=constants.HOST,
         port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     # query to get user credentials
-    query = 'SELECT * FROM eaglelandDB.user WHERE ID = "%s"' % (session['jwt_payload']['sub'])
+    query = 'SELECT * FROM eaglelandDB.user WHERE ID = "%s"' % (userid)
     mycursor.execute(query)
     result = mycursor.fetchone()
     mycursor.close
     # extracts token and refresh token from SQL response
     token = result[2]
     refreshToken = result[3]
+
+    # gets secret info from client secret file and stores credentials in flask session
+    with open(CLIENT_SECRETS_FILE) as json_file:  
+        data = json.load(json_file)
+    return {
+        'client_id': data['web']['client_id'],
+        'client_secret': data['web']['client_secret'],
+        'refresh_token': refreshToken,
+        'scopes': ['https://www.googleapis.com/auth/calendar.readonly'],
+        'token': token,
+        'token_uri': 'https://oauth2.googleapis.com/token'
+    }
 
     # gets secret info from client secret file and stores credentials in flask session
     with open(CLIENT_SECRETS_FILE) as json_file:  
