@@ -188,10 +188,7 @@ def get_shared_freetimes(rangestart, rangeend, calendar1, calendar2):
     index = -1
     freetimestart = rangestart
     while index < len(calendar):
-        if index == -1:
-            event = calendar[index + 1]
-        else:
-            event = calendar[index]
+        event = calendar[index]
         # If freetimestart is in the middle of an event on the calendar, make it the end of that event.
         if event.starttime <= freetimestart < event.endtime:
             freetimestart = event.endtime
