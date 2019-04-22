@@ -19,8 +19,8 @@ from flask import url_for
 from authlib.flask.client import OAuth
 from six.moves.urllib.parse import urlencode
 
-from . import constants
-from . import database
+import app.constants as constants
+import app.database as database
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 if sys.platform == 'win32':

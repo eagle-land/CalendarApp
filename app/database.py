@@ -9,7 +9,7 @@ from flask import render_template
 from flask import session
 from flask import url_for
 
-from . import constants
+import app.constants as constants
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 if sys.platform == 'win32':

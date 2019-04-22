@@ -6,8 +6,8 @@ import google.oauth2.credentials
 import os
 import sys
 
-from . import auth
-from . import database
+import app.auth as auth
+import app.database as database
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 if sys.platform == 'win32':

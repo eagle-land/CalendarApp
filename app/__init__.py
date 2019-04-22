@@ -5,11 +5,11 @@ from flask import Flask, render_template, session
 from authlib.flask.client import OAuth
 import os.path
 
-from . import auth
-from . import constants
-from . import calendar
-from . import calendar_auth
-from . import database
+import app.auth as auth
+import app.constants as constants
+import app.calendar as calendar
+import app.calendar_auth as calendar_auth
+import app.database as database
 
 CLIENT_SECRETS_FILE = 'client_secret.json'
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -102,7 +102,7 @@ def create_app(test_config=None):
     def web_test():
 
         start = "2019-04-15T00:00:00-04:00"
-        end = "2019-04-21T00:00:00-04:00"
+        end = "2019-04-15T11:00:00-04:00"
         timezone = "America/New_York"
 
         #usercalendar = calendar.get_calendar(session['jwt_payload']['sub'], start, end, timezone)
