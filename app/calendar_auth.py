@@ -7,6 +7,7 @@ import os
 import sys
 
 from . import auth
+from . import database
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 if sys.platform == 'win32':
@@ -21,7 +22,7 @@ API_VERSION = 'v3'
 
 def get_freebusy(userid, body):
     # Load credentials from the session.
-    usercredentials = auth.load_database_creds(userid)
+    usercredentials = database.load_database_creds(userid)
     credentials = google.oauth2.credentials.Credentials(
         **usercredentials)
 
