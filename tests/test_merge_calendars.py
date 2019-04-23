@@ -64,7 +64,7 @@ def test3():
     #second user calendar events defined
     user2events = [
         calendar.Event("2019-05-15T9:00:00-04:00", "2019-05-15T10:00:00-04:00"),
-	    calendar.Event("2019-05-15T8:00:00-04:00", "2019-05-15T22:00:00-04:00")
+        calendar.Event("2019-05-15T8:00:00-04:00", "2019-05-15T22:00:00-04:00")
     ]
     calendar2 = calendar.Calendar(user2events) #put user2 events into calendar
 

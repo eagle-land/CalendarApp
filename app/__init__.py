@@ -129,7 +129,7 @@ def create_app(test_config=None):
 
         start = "2019-04-22T19:56:40-04:00"
         end = "2019-05-22T19:56:40-04:00"
-        timezone = "en-US"
+        timezone = "America/New_York"
 
         usercalendar = calendar.compare_user_calendars(session['jwt_payload']['sub'], session['jwt_payload']['sub'], start, end, timezone)
 
