@@ -23,10 +23,6 @@ def test1():
     rangestart = "2019-04-15T11:00:00-04:00"
     rangeend = "2019-04-15T12:50:00-04:00"
     result = calendar.get_shared_freetimes(rangestart, rangeend, calendar1, calendar2)
-    result_string =""
-    for event in result:
-        result_string += event.starttime + ' - ' + event.endtime + '\n'
-    print(result_string)
     assert result == freecalendar
 
 def test2(): #testing to see if it can find events that are in range even when the beginning/end event are out of range
@@ -51,10 +47,6 @@ def test2(): #testing to see if it can find events that are in range even when t
     rangestart = "2019-04-15T11:00:00-04:00"
     rangeend = "2019-04-15T15:60:00-02:00"
     result = calendar.get_shared_freetimes(rangestart, rangeend, calendar1, calendar2)
-    result_string =""
-    for event in result:
-        result_string += event.starttime + ' - ' + event.endtime + '\n'
-    print(result_string)
     assert result != freecalendar
 
 
@@ -80,10 +72,6 @@ def test3(): #seeing the error that occurs when an event is out of range
     rangestart = "2019-04-15T11:00:00-04:00"
     rangeend = "2019-04-15T12:55:00-08:00"
     result = calendar.get_shared_freetimes(rangestart, rangeend, calendar1, calendar2)
-    result_string =""
-    for event in result:
-        result_string += event.starttime + ' - ' + event.endtime + '\n'
-    print(result_string)
     assert result != freecalendar
 
 
@@ -109,10 +97,6 @@ def test4(): #seeing the error that occurs when an event is out of range
     rangestart = "2019-04-12T9:00:00-04:00"
     rangeend = "2019-04-16T12:50:00-04:00"
     result = calendar.get_shared_freetimes(rangestart, rangeend, calendar1, calendar2)
-    result_string =""
-    for event in result:
-        result_string += event.starttime + ' - ' + event.endtime + '\n'
-    print(result_string)
     assert result != freecalendar
 
 if __name__ == '__main__':
