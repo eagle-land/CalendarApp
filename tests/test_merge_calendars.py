@@ -45,10 +45,6 @@ def test2():
     mergedcalendar = calendar.Calendar(mergedevents)
 
     result = calendar.merge_calendars(calendar1, calendar2)
-    result_string = ""
-    for event in result:
-        result_string += event.starttime + ' - ' + event.endtime + '\n'
-    print(result_string)
     assert result == mergedcalendar
 
 
@@ -62,7 +58,7 @@ def test3():
 
     # second user calendar events defined
     user2events = [
-        calendar.Event("2019-05-15T8:00:00-04:00", "2019-05-15T22:00:00-04:00")
+        calendar.Event("2019-05-15T08:00:00-04:00", "2019-05-15T22:00:00-04:00")
     ]
     calendar2 = calendar.Calendar(user2events)  # put user2 events into calendar
 
@@ -73,10 +69,6 @@ def test3():
 
     mergedcalendar = calendar.Calendar(mergedevents)  # compare calendar variable
     result = calendar.merge_calendars(calendar1, calendar2)  # test variables compare
-    result_string = ""
-    for event in result:
-        result_string += event.starttime + ' - ' + event.endtime + '\n'
-    print(result_string)
     assert result == mergedcalendar  # assert will say whether the test failed or not
 
 
