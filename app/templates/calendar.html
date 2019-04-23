@@ -12,6 +12,7 @@
 
 {% block headScript %}
     <script src="{{ url_for('static', filename='fullCalendar/core/main.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='fullCalendar/interaction/main.min.js') }}"></script>
     <script src="{{ url_for('static', filename='fullCalendar/daygrid/main.min.js') }}"></script>
     <script src="{{ url_for('static', filename='fullCalendar/timegrid/main.min.js') }}"></script>
     <script src="{{ url_for('static', filename='fullCalendar/bootstrap/main.min.js') }}"></script>
@@ -44,6 +45,36 @@
                     </button>
                 </div>
             </div>
+            <div class="modal fade" id="event-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title">Modal title</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form name="save-event" method="post">
+                                <div class="form-group">
+                                    <label>Title</label>
+                                    <input type="text" name="title" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Event start</label>
+                                    <input type="text" name="evtStart" class="form-control col-xs-3" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Event end</label>
+                                    <input type="text" name="evtEnd" class="form-control col-xs-3" />
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
             <p id="test"></p>
         </div>
         <br>
@@ -65,7 +96,11 @@
             console.log(parsedEvents);
         
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                plugins: [ 'timeGrid', 'bootstrap' ],
+                selectable: true,
+                selectMirror: true,
+                unselectAuto: false,
+                snapDuration: '00:05',
+                plugins: [ 'interaction', 'timeGrid', 'bootstrap' ],
                 // Defaults to weekly view with times
                 defaultView: 'timeGridWeek',
                 // Buttons at the top of calendar
@@ -79,7 +114,21 @@
                 // Line displaying the time right now
                 nowIndicator: true,
                 // Array holding all event objects
-                events: parsedEvents
+                events: parsedEvents,
+                // Allow user to create an event
+                select: function(info) {
+                    var title = prompt('Event Title:');
+                    var eventData;
+                    if (title) {
+                        eventData = {
+                            title: title,
+                            start: info.start,
+                            end: info.end
+                        };
+                        $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+                    }
+                    $('#calendar').fullCalendar('unselect');
+                }
             });
         
             calendar.render();

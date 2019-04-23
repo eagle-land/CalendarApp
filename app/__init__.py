@@ -77,11 +77,6 @@ def create_app(test_config=None):
 
     @app.route('/example_calendar')
     def example_calendar():
-        date_handler = lambda obj: (
-            obj.isoformat()
-            if isinstance(obj, (datetime.datetime, datetime.date))
-            else None
-        )
 
         start = '2019-04-22T19:56:40-04:00'
         end = '2019-05-22T19:56:40-04:00'
@@ -97,10 +92,14 @@ def create_app(test_config=None):
 
         events = []
         for event in usercalendar:
+            id = 0
             events.append({
+                'id': id,
                 'start': event.starttime,
-                'end': event.endtime
+                'end': event.endtime,
+                'rendering': 'background'
             })
+            id = id + 1
 
         return render_template('calendar.html', events=events)
 
@@ -130,7 +129,7 @@ def create_app(test_config=None):
 
         start = "2019-04-22T19:56:40-04:00"
         end = "2019-05-22T19:56:40-04:00"
-        timezone = "America/New_York"
+        timezone = "en-US"
 
         usercalendar = calendar.compare_user_calendars(session['jwt_payload']['sub'], session['jwt_payload']['sub'], start, end, timezone)
 
