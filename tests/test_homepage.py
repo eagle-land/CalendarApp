@@ -30,7 +30,6 @@ def test_button():
     CurrentUrl = browser.current_url
     assert CurrentUrl == "http://localhost:5000/"
     assert "Shared Skies" in browser.title
-    #NavLink = browser.find_element_by_id("nav-link-accountList")
     Button = browser.find_element_by_class_name("btn-primary")
     Button.click()
     assert "Sign In" in browser.title
