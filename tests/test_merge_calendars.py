@@ -73,7 +73,6 @@ def test3():
 
     mergedcalendar = calendar.Calendar(mergedevents)  # compare calendar variable
     result = calendar.merge_calendars(calendar1, calendar2)  # test variables compare
-    result = calendar.merge_calendars(calendar1, calendar2)
     result_string = ""
     for event in result:
         result_string += event.starttime + ' - ' + event.endtime + '\n'
