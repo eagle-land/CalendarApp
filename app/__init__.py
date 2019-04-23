@@ -4,6 +4,8 @@ import os
 from flask import Flask, render_template, session
 from authlib.flask.client import OAuth
 import os.path
+import datetime
+import json
 
 from . import auth
 from . import constants
@@ -75,7 +77,34 @@ def create_app(test_config=None):
 
     @app.route('/example_calendar')
     def example_calendar():
-        return render_template('calendar.html')
+
+        date_handler = lambda obj: (
+            obj.isoformat()
+            if isinstance(obj, (datetime.datetime, datetime.date))
+            else None
+        )
+
+        start = '2019-04-22T19:56:40Z'
+        end = '2019-05-22T19:56:40Z'
+        timezone = 'America/New_York'
+
+        usercalendar = calendar.get_calendar(
+            session['jwt_payload']['sub'], 
+            start, 
+            end, 
+            timezone
+        )
+
+        userevents = usercalendar.events
+        events = []
+
+        for event in userevents:
+            events.append({
+                'start': event.starttime,
+                'end': event.endtime
+            })
+
+        return render_template('calendar.html', events=events)
 
     @app.route('/callback')
     def callback_handling():

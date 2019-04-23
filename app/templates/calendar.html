@@ -44,6 +44,7 @@
                     </button>
                 </div>
             </div>
+            <p id="test"></p>
         </div>
         <br>
     </div>
@@ -57,6 +58,11 @@
     <script>
         $(document).ready(function() {
             var calendarEl = document.getElementById('calendar');
+
+            var events = '{{ events }}';
+            var splitEvents = events.split('&#39;').join('"')
+            parsedEvents = JSON.parse(splitEvents);
+            console.log(parsedEvents);
         
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 plugins: [ 'timeGrid', 'bootstrap' ],
@@ -72,7 +78,8 @@
                 themeSystem: 'bootstrap',
                 // Line displaying the time right now
                 nowIndicator: true,
-
+                // Array holding all event objects
+                events: parsedEvents
             });
         
             calendar.render();
