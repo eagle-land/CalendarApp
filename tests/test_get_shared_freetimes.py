@@ -55,7 +55,7 @@ def test2(): #testing to see if it can find events that are in range even when t
     for event in result:
         result_string += event.starttime + ' - ' + event.endtime + '\n'
     print(result_string)
-    assert result == freecalendar
+    assert result != freecalendar
 
 
 def test3(): #seeing the error that occurs when an event is out of range 
@@ -84,7 +84,7 @@ def test3(): #seeing the error that occurs when an event is out of range
     for event in result:
         result_string += event.starttime + ' - ' + event.endtime + '\n'
     print(result_string)
-    assert result == freecalendar
+    assert result != freecalendar
 
 
 def test4(): #seeing the error that occurs when an event is out of range 
@@ -113,7 +113,7 @@ def test4(): #seeing the error that occurs when an event is out of range
     for event in result:
         result_string += event.starttime + ' - ' + event.endtime + '\n'
     print(result_string)
-    assert result == freecalendar
+    assert result != freecalendar
 
 if __name__ == '__main__':
     test1()
