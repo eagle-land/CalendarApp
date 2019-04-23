@@ -4,12 +4,14 @@ import os
 from flask import Flask, render_template, session
 from authlib.flask.client import OAuth
 import os.path
+import datetime
+import json
 
-from . import auth
-from . import constants
-from . import calendar
-from . import calendar_auth
-from . import database
+import app.auth as auth
+import app.constants as constants
+import app.calendar as calendar
+import app.calendar_auth as calendar_auth
+import app.database as database
 
 CLIENT_SECRETS_FILE = 'client_secret.json'
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -75,7 +77,31 @@ def create_app(test_config=None):
 
     @app.route('/example_calendar')
     def example_calendar():
-        return render_template('calendar.html')
+
+        start = '2019-04-22T19:56:40-04:00'
+        end = '2019-05-22T19:56:40-04:00'
+        timezone = 'America/New_York'
+
+        usercalendar = calendar.compare_user_calendars(
+            session['jwt_payload']['sub'],
+            session['jwt_payload']['sub'],
+            start,
+            end,
+            timezone
+        )
+
+        events = []
+        for event in usercalendar:
+            id = 0
+            events.append({
+                'id': id,
+                'start': event.starttime,
+                'end': event.endtime,
+                'rendering': 'background'
+            })
+            id = id + 1
+
+        return render_template('calendar.html', events=events)
 
     @app.route('/callback')
     def callback_handling():
@@ -101,11 +127,10 @@ def create_app(test_config=None):
     @app.route('/webtest')
     def web_test():
 
-        start = "2019-04-15T00:00:00-04:00"
-        end = "2019-04-21T00:00:00-04:00"
-        timezone = "America/New_York"
+        start = "2019-04-22T19:56:40-04:00"
+        end = "2019-05-22T19:56:40-04:00"
+        timezone = "en-US"
 
-        #usercalendar = calendar.get_calendar(session['jwt_payload']['sub'], start, end, timezone)
         usercalendar = calendar.compare_user_calendars(session['jwt_payload']['sub'], session['jwt_payload']['sub'], start, end, timezone)
 
         freebusy_string = ""

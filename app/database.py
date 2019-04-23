@@ -9,7 +9,10 @@ from flask import render_template
 from flask import session
 from flask import url_for
 
-from . import constants
+import http.client
+import urllib.parse
+
+import app.constants as constants
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 if sys.platform == 'win32':
@@ -30,9 +33,10 @@ def add_to_database():
     googleRefreshToken = session['credentials']['refresh_token']
     userID = session['jwt_payload']['sub']
     nickname = session['jwt_payload']['nickname']
+    email = get_user_email(generate_access_token())
     #query to add data into table
-    SQLquery = "REPLACE INTO user(google_token, google_refresh_token, ID, nickname) VALUES (%s, %s, %s, %s)"
-    values = (googleToken, googleRefreshToken, userID, nickname)
+    SQLquery = "REPLACE INTO user(google_token, google_refresh_token, ID, nickname, email) VALUES (%s, %s, %s, %s, %s)"
+    values = (googleToken, googleRefreshToken, userID, nickname, email)
     #executes query and commits it to database
     mycursor.execute(SQLquery, values)
     connection.commit()
@@ -127,14 +131,14 @@ def check_if_friends (userID, friendID):
     return (result[0] == 1)
 
 
-def search_user_in_database(nickname):
+def search_user_by_email(email):
     connection = mysql.connector.connect(
         user=constants.USER, password=constants.PASSWORD,
         host=constants.HOST,
         port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     # query to get user information
-    query = 'SELECT * FROM eaglelandDB.user WHERE nickname = "%s"' % (nickname)
+    query = 'SELECT * FROM eaglelandDB.user WHERE email = "%s"' % (nickname)
     mycursor.execute(query)
     result = mycursor.fetchone()
     mycursor.close
@@ -202,3 +206,32 @@ def get_pending_friends(user):
         friendlist.append(x[0])
     # returns list of pending friend userIDs from friend table
     return friendlist
+
+
+def generate_access_token():
+    #call to get access token from auth0 to use their "management API"
+    conn = http.client.HTTPSConnection("shared-skies.auth0.com")
+    payload = "{\"client_id\":\"%s\",\"client_secret\":\"%s\",\"audience\":\"https://shared-skies.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}" % (constants.AUTH0_CLIENT_ID, constants.AUTH0_CLIENT_SECRET)
+    headers = { 'content-type': "application/json" }
+    conn.request("POST", "/oauth/token", payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    authTokenResponseString = data.decode("utf-8")
+    authJson = json.loads(authTokenResponseString)
+    #returns the access token
+    return authJson["access_token"]
+
+
+def get_user_email(token):
+    #connects to auth0 api server to pull user email
+    conn = http.client.HTTPSConnection("shared-skies.auth0.com")
+    headers = { 'authorization': "Bearer %s" % (token) }
+    requestString = urllib.parse.quote(session['jwt_payload']['sub'])
+    conn.request("GET", "/api/v2/users/%s" % (requestString), headers=headers)
+    res = conn.getresponse()
+    data = res.read()
+    #conveerts server response to json and extracts email string
+    response = json.loads(data.decode("utf-8"))
+    print(response["email"])
+    return response["email"]
+
