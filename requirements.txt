@@ -25,20 +25,3 @@ six==1.12.0
 uritemplate==3.0.0
 urllib3==1.24.1
 Werkzeug==0.14.1
-start = datetime.datetime.today()
-        difference = datetime.timedelta(days=14)
-        end = start + difference
-        timezone = 'America/New_York'
-
-        usercalendar = calendar.get_calendar(
-            session['jwt_payload']['sub'], 
-            start, 
-            end, 
-            timezone
-        )
-
-        def myconverter(o):
-            if isinstance(o, datetime.datetime):
-                return o.__str__()
-
-        json_cal = json.dumps(myconverter(usercalendar))

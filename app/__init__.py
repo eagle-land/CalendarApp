@@ -77,28 +77,26 @@ def create_app(test_config=None):
 
     @app.route('/example_calendar')
     def example_calendar():
-
         date_handler = lambda obj: (
             obj.isoformat()
             if isinstance(obj, (datetime.datetime, datetime.date))
             else None
         )
 
-        start = '2019-04-22T19:56:40Z'
-        end = '2019-05-22T19:56:40Z'
+        start = '2019-04-22T19:56:40-04:00'
+        end = '2019-05-22T19:56:40-04:00'
         timezone = 'America/New_York'
 
-        usercalendar = calendar.get_calendar(
-            session['jwt_payload']['sub'], 
-            start, 
-            end, 
+        usercalendar = calendar.compare_user_calendars(
+            session['jwt_payload']['sub'],
+            session['jwt_payload']['sub'],
+            start,
+            end,
             timezone
         )
 
-        userevents = usercalendar.events
         events = []
-
-        for event in userevents:
+        for event in usercalendar:
             events.append({
                 'start': event.starttime,
                 'end': event.endtime
@@ -130,11 +128,10 @@ def create_app(test_config=None):
     @app.route('/webtest')
     def web_test():
 
-        start = "2019-04-15T00:00:00-04:00"
-        end = "2019-04-15T11:00:00-04:00"
+        start = "2019-04-22T19:56:40-04:00"
+        end = "2019-05-22T19:56:40-04:00"
         timezone = "America/New_York"
 
-        #usercalendar = calendar.get_calendar(session['jwt_payload']['sub'], start, end, timezone)
         usercalendar = calendar.compare_user_calendars(session['jwt_payload']['sub'], session['jwt_payload']['sub'], start, end, timezone)
 
         freebusy_string = ""
