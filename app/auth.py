@@ -88,7 +88,7 @@ def load_credentials():
     # if user isn't in database they are added here
     if (database.check_user_exists(session['jwt_payload']['sub']) == False):
         database.add_to_database()
-    return redirect('/example_calendar')
+    return redirect('/home')
 
 
 def login(auth0):
