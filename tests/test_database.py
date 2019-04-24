@@ -30,13 +30,13 @@ def testing_email_search():
 
 
 def testing_get_friends():
-    assert database.get_friends('1') == ['2', '3']
-    assert database.get_friends('1') != ['2', '8']
+    assert database.get_friends('1') == {'2': 'test2', '3': 'test3'}
+    assert database.get_friends('1') != {'2': 'test2', '4': 'test3'}
 
 
 def testing_get_friends_pending():
-    assert database.get_pending_friends('1') == ['4']
-    assert database.get_pending_friends('1') != ['3']
+    assert database.get_pending_friends('1') == {'4': 'test4'}
+    assert database.get_pending_friends('1') != {'3': 'test4'}
 
 
 if __name__ == '__main__':
