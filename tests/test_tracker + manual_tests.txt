@@ -1,0 +1,74 @@
+######### TEST TRACKER ##############################
+goal: maybe at least one each, five for satisfactory (??)
+
+######### calendar.py ######### CALENDAR-SIDE########
+
+cal_compare_user_calendars: 0
+
+cal_get_calendar: 2
+
+cal_get_shared_freetimes: 4
+
+cal_merge_calendars: 3
+#####################################################
+
+
+
+
+######### database.py ######## DATABASE-SIDE ########
+
+in dat_databases-------------------------------------
+
+#1 check_user_exists:   1
+#2 check_user_exists_nickname:  1
+#3 check_if_friends:    1
+#5 get_friends:     1
+#6 get_pending_friends:     1
+
+-----------------------------------------------------
+
+#do we need tests for these??
+
+add_to_database: 0
+
+load_database_creds: 0
+
+search_user_by_email: 0
+
+def request_friend: 0
+
+get_user_email(token): 0
+
+#####################################################
+
+Manual Tests #########################################
+
+
+CONTACT PAGE TEST
+1. Go to landing page
+2. Click "Contact"
+3. Verify that page displays list of contact information
+
+HOME TEST
+1. Go to landing page, click on any other page
+2. From any other page, click "Home"
+3. Verify that you are now back at the landing page
+
+ABOUT PAGE TEST
+1. Go to landing page
+2. Click "About"
+3. Verify that page displays information about the team, application, and the vision statement
+
+ACCOUNT CREATION TEST
+1. Go to landing page
+2. Click "Create Account"
+3. Enter credentials to create account
+4. Verify that account is created
+	4.a. Verify that you are now shown your calendar data
+	4.b. Attempt to log out and log back in to your new account -- see LOGIN TEST
+
+LOGIN TEST
+1. Go to landing page
+2. Click "Login"
+3. Enter credentials to login
+4. Verify that calendar information for user displays

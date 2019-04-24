@@ -1,5 +1,12 @@
 import app.database as database
 
+#####   test in order
+#1 check_user_exists
+#2 check_user_exists_nickname
+#3 check_if_friends
+#5 get_friends
+#6 get_pending_friends
+
 
 def test_1():
     assert database.check_user_exists('1') == True

@@ -1,6 +1,8 @@
 import app.calendar as calendar
 
 
+
+
 def test1():
     # User ID 1
     user1id = ""    # Fill this in!
@@ -9,9 +11,9 @@ def test1():
     user2id = ""    # Fill this in!
 
     # Range
-    start = "2019-04-01T00:00:00-04:00"
+    start = "2019-04-01T00:00:00-04:00" # year-month-day(T)two digit hours: two digit minutes: two digit seconds(-04 is subtracted from UTC, this for example is EST eastern time)
     end = "2019-04-02T00:00:00-04:00"
-    timezone = "America/New_York"
+    timezone = "America/New_York" #only use this as the timezone
 
     # Correct return value
     freeevents = [

@@ -52,7 +52,7 @@ def test3():
     # Example calendar 1
     user1events = [
         calendar.Event("2019-05-15T13:00:00-04:00", "2019-05-15T20:00:00-04:00")
-        # year-month-day(T)hours:minutes:seconds(-04 is subtracted from UTC this is EST
+        # year-month-day(T)two digit hours: two digit minutes: two digit seconds(-04 is subtracted from UTC, this for example is EST eastern time)
     ]
     calendar1 = calendar.Calendar(user1events)  # put user1 events into calendar
 
