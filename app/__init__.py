@@ -82,8 +82,7 @@ def create_app(test_config=None):
         end = '2019-05-22T19:56:40-04:00'
         timezone = 'America/New_York'
 
-        usercalendar = calendar.compare_user_calendars(
-            session['jwt_payload']['sub'],
+        usercalendar = calendar.get_calendar(
             session['jwt_payload']['sub'],
             start,
             end,
@@ -97,11 +96,12 @@ def create_app(test_config=None):
                 'id': id,
                 'start': event.starttime,
                 'end': event.endtime,
-                'rendering': 'background'
             })
             id = id + 1
 
-        return render_template('calendar.html', events=events)
+        friends = database.get_friends(session['jwt_payload']['sub'])
+
+        return render_template('homeCalendar.html', events=events, friends=friends)
 
     @app.route('/callback')
     def callback_handling():

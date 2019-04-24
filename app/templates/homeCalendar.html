@@ -94,9 +94,12 @@
             var splitEvents = events.split('&#39;').join('"')
             parsedEvents = JSON.parse(splitEvents);
             console.log(parsedEvents);
+
+            var friends = '{{ friends }}';
+            console.log(friends);
         
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                selectable: true,
+                //selectable: true,
                 selectMirror: true,
                 unselectAuto: false,
                 snapDuration: '00:05',
@@ -116,7 +119,7 @@
                 // Array holding all event objects
                 events: parsedEvents,
                 // Allow user to create an event
-                select: function(info) {
+                /* select: function(info) {
                     var title = prompt('Event Title:');
                     var eventData;
                     if (title) {
@@ -128,7 +131,7 @@
                         $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
                     }
                     $('#calendar').fullCalendar('unselect');
-                }
+                } */
             });
         
             calendar.render();
