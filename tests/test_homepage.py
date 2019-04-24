@@ -54,14 +54,20 @@ def test_login():
     assert "2019" in browser.page_source
     assert "Sign In" not in browser.title
 
-def test_nav_buttons():
+def test_calendar_nav_buttons():
     time.sleep(1)
     Day = browser.find_element_by_class_name("fc-timeGridDay-button")
     Day.click()
     time.sleep(1)
-    Week =browser.find_element_by_class_name("fc-timeGridWeek-button")
+    Week = browser.find_element_by_class_name("fc-timeGridWeek-button")
     Week.click()
-
+    time.sleep(1)
+    Prev = browser.find_element_by_class_name("fc-prev-button")
+    Prev.click()
+    time.sleep(1)  
+    Next = browser.find_element_by_class_name("fc-next-button")
+    Next.click()
+    
     time.sleep(10)
     browser.close()
     browser.quit()
