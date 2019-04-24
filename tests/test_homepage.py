@@ -9,23 +9,27 @@ browser = webdriver.Chrome()
 browser.get("localhost:5000")
 
 def test_homepage():
+    #Tests that default homepage is up
     CurrentUrl = browser.current_url
     assert CurrentUrl == "http://localhost:5000/"
     assert "Shared Skies" in browser.title
 
 def test_about():
+    #Test the about page
     browser.get("localhost:5000/about")
     CurrentUrl = browser.current_url
     assert CurrentUrl == "http://localhost:5000/about"
     assert "About" in browser.title
 
 def test_contact():
+    #Test the contact page
     browser.get("localhost:5000/contact")
     CurrentUrl = browser.current_url
     assert CurrentUrl == "http://localhost:5000/contact"
     assert "Contact" in browser.title
 
 def test_button():
+    #Test the Login button
     browser.get("localhost:5000")
     CurrentUrl = browser.current_url
     assert CurrentUrl == "http://localhost:5000/"
@@ -49,6 +53,15 @@ def test_login():
     time.sleep(2)
     assert "2019" in browser.page_source
     assert "Sign In" not in browser.title
+
+def test_nav_buttons():
+    time.sleep(1)
+    Day = browser.find_element_by_class_name("fc-timeGridDay-button")
+    Day.click()
+    time.sleep(1)
+    Week =browser.find_element_by_class_name("fc-timeGridWeek-button")
+    Week.click()
+
     time.sleep(10)
     browser.close()
     browser.quit()
