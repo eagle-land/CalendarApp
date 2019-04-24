@@ -1,7 +1,7 @@
 import app.calendar as calendar
 
 
-def test1():
+def test_merge_calendar1():
     # Example calendar 1
     user1events = [
         calendar.Event("2019-04-15T11:00:00-04:00", "2019-04-15T11:50:00-04:00")
@@ -25,7 +25,7 @@ def test1():
     assert result == mergedcalendar
 
 
-def test2():
+def test_merge_calendar2():
     # Example calendar 1
     user1events = [
         calendar.Event("2019-04-15T11:00:00-04:00", "2019-04-15T12:00:00-04:00")
@@ -48,7 +48,7 @@ def test2():
     assert result == mergedcalendar
 
 
-def test3():
+def test_merge_calendar3():
     # Example calendar 1
     user1events = [
         calendar.Event("2019-05-15T13:00:00-04:00", "2019-05-15T20:00:00-04:00")
@@ -70,7 +70,7 @@ def test3():
     mergedcalendar = calendar.Calendar(mergedevents)  # compare calendar variable
     result = calendar.merge_calendars(calendar1, calendar2)  # test variables compare
     assert result == mergedcalendar  # assert will say whether the test failed or not
-def test4():
+def test_merge_calendar4():
     # Example calendar 1
     user1events = [
         calendar.Event("2019-05-16T13:00:00-04:00", "2019-05-16T20:00:00-04:00")
@@ -93,7 +93,7 @@ def test4():
     result = calendar.merge_calendars(calendar1, calendar2)  # test variables compare
     assert result == mergedcalendar  # assert will say whether the test failed or not
 
-def test5():
+def test_merge_calendar5():
     # Example calendar 1
     user1events = [
         calendar.Event("2019-05-15T10:00:00-04:00", "2019-05-15T20:00:00-04:00")
@@ -117,9 +117,9 @@ def test5():
     assert result == mergedcalendar  # assert will say whether the test failed or not
 
 if __name__ == '__main__':
-    test1()
-    test2()
-    test3()
-    test4()
-    test5()
+    test_merge_calendar1()
+    test_merge_calendar2()
+    test_merge_calendar3()
+    test_merge_calendar4()
+    test_merge_calendar5()
     print("Passed all tests.")
