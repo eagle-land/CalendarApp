@@ -138,7 +138,7 @@ def search_user_by_email(email):
         port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     # query to get user information
-    query = 'SELECT * FROM eaglelandDB.user WHERE email = "%s"' % (nickname)
+    query = 'SELECT * FROM eaglelandDB.user WHERE email = "%s"' % (email)
     mycursor.execute(query)
     result = mycursor.fetchone()
     mycursor.close

@@ -23,8 +23,9 @@ def test_3():
     assert database.check_if_friends('1', '5') == False
 
 
-#def test_4():
-#    assert database.search_user_in_database('test') == '1'             #func doesnt exist?
+def test_4():
+    assert database.search_user_by_email('test@test.com') == '1'             #func doesnt exist?
+
 
 
 def test_5():
@@ -39,7 +40,7 @@ if __name__ == '__main__':
     test_1()
     test_2()
     test_3()
-    #test_4()
+    test_4()
     test_5()
     test_6()
     print("Passed all database tests.")
