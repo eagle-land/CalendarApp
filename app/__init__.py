@@ -75,8 +75,8 @@ def create_app(test_config=None):
     def contact():
         return render_template('contact.html')
 
-    @app.route('/example_calendar')
-    def example_calendar():
+    @app.route('/home')
+    def home_calendar():
 
         start = '2019-04-22T19:56:40-04:00'
         end = '2019-05-22T19:56:40-04:00'
