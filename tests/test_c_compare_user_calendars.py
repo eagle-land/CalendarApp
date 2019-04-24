@@ -1,14 +1,11 @@
 import app.calendar as calendar
 
-
-
-
 def test1():
     # User ID 1
-    user1id = ""    # Fill this in!
+    user1id = "auth0|5cb50516ee4bd5113d54872b"    # Jareds ID!
 
     # User ID 2
-    user2id = ""    # Fill this in!
+    user2id = "auth0|5cbe466fd1f05811d6866c0b"    # Jacobs ID!
 
     # Range
     start = "2019-04-01T00:00:00-04:00" # year-month-day(T)two digit hours: two digit minutes: two digit seconds(-04 is subtracted from UTC, this for example is EST eastern time)
@@ -17,6 +14,9 @@ def test1():
 
     # Correct return value
     freeevents = [
+        calendar1 = calendar.get_calendar(user1id, start, end, timezone)
+        calendar2 = calendar.get_calendar(user2id, start, end, timezone)
+        calendar.get_shared_freetimes(start,end, calendar1, calendar2)
         # Create a calendar containing the correct shared freetimes between both user calendars.
     ]
     freecalendar = calendar.Calendar(freeevents)
