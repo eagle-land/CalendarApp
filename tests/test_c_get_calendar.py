@@ -3,16 +3,6 @@ import app.calendar as calendar
 """#USERIDS================================================================================================
 plug these in for userid...uhh...we need to know whats in these to test....may need to make a new account
 also ask permission
-
-auth0|5cafcdd001794010d1a87199 | eaglelandcalendar
-auth0|5cb50516ee4bd5113d54872b | anderson.jared.16
-auth0|5cbe466fd1f05811d6866c0b | jweidokal
-auth0|5cbe4866d7b1c711a5501aa9 | lukerinehart79
-google-oauth2|100777251036820245336 | jesslw4265
-google-oauth2|101549375517518268621 | brycebenjamin412
-google-oauth2|101784608437017000546 | aruyten
-google-oauth2|107924541134693290456 | bcottrel
-google-oauth2|115194717897037388792 | madscience12
 """
 
 """#CURRENTLY----------------------DOES-------------------------NOT------------------------------WORK-----------------------------------------------
