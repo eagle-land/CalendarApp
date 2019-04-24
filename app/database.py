@@ -183,7 +183,7 @@ def get_friends(userID):
         port=constants.PORT, database=constants.DATABASE)
     mycursor = connection.cursor()
     # query to change pending value to 0 when accepted
-    query = 'SELECT user2 FROM friend WHERE user1 = %s AND pending = 0' % (userID)
+    query = 'SELECT user2 FROM friend WHERE user1 = "%s" AND pending = 0' % (userID)
     mycursor.execute(query)
     friendlist = []
     if (mycursor.fetchone == None):
