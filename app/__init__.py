@@ -1,7 +1,7 @@
 from __future__ import print_function
 import os
 
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, request
 from authlib.flask.client import OAuth
 import os.path
 import datetime
@@ -102,6 +102,38 @@ def create_app(test_config=None):
         friends = database.get_friends(session['jwt_payload']['sub'])
 
         return render_template('homeCalendar.html', events=events, friends=friends)
+
+    @app.route('/compare')
+    def compare_calendar():
+        friendID = request.args.get('id')
+
+        start = '2019-04-22T19:56:40-04:00'
+        end = '2019-05-22T19:56:40-04:00'
+        timezone = 'America/New_York'
+
+        compared_calendar = calendar.compare_user_calendars(
+            session['jwt_payload']['sub'],
+            friendID,
+            start,
+            end,
+            timezone
+        )
+
+        events = []
+        for event in compared_calendar:
+            id = 0
+            events.append({
+                'id': id,
+                'start': event.starttime,
+                'end': event.endtime,
+                'rendering': 'background'
+            })
+            id = id + 1
+
+        friends = database.get_friends(session['jwt_payload']['sub'])
+
+        return render_template('compareCalendar.html', events=events, friends=friends)        
+
 
     @app.route('/callback')
     def callback_handling():
