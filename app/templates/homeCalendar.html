@@ -96,7 +96,9 @@
             console.log(parsedEvents);
 
             var friends = '{{ friends }}';
-            console.log(friends);
+            if (friends.length == 0) {
+                let test = 0;
+            }
         
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 //selectable: true,
