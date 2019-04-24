@@ -8,39 +8,42 @@ import app.database as database
 #6 get_pending_friends
 
 
-def test_1():
+def testing_user_exists():
     assert database.check_user_exists('1') == True
     assert database.check_user_exists('1111') == False
 
 
-def test_2():
+def testing_nickname_exists():
     assert database.check_user_exists_nickname('test') == True
     assert database.check_user_exists_nickname('tester') == False
 
 
-def test_3():
+def testing_if_friendd():
     assert database.check_if_friends('1', '2') == True
     assert database.check_if_friends('1', '5') == False
 
 
-def test_4():
-    assert database.search_user_by_email('test@test.com') == '1'             #func doesnt exist?
+def testing_email_search():
+    assert database.search_user_by_email('test@test.com') == '1'  
+    assert database.search_user_by_email('test@test.com') != '0'  
 
 
 
-def test_5():
+def testing_get_friends():
     assert database.get_friends('1') == ['2', '3']
+    assert database.get_friends('1') != ['2', '8']
 
 
-def test_6():
+def testing_get_friends_pending():
     assert database.get_pending_friends('1') == ['4']
+    assert database.get_pending_friends('1') != ['3']
 
 
 if __name__ == '__main__':
-    test_1()
-    test_2()
-    test_3()
-    test_4()
-    test_5()
-    test_6()
+    testing_user_exists()
+    testing_nickname_exists()
+    testing_if_friendd()
+    testing_email_search()
+    testing_get_friends()
+    testing_get_friends_pending()
     print("Passed all database tests.")
