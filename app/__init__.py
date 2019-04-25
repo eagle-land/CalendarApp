@@ -9,7 +9,7 @@ import json
 
 import app.auth as auth
 import app.constants as constants
-import app.calendar as calendar
+import app.calendar_main as calendar_main
 import app.calendar_auth as calendar_auth
 import app.database as database
 
@@ -82,7 +82,7 @@ def create_app(test_config=None):
         end = '2019-05-22T19:56:40-04:00'
         timezone = 'America/New_York'
 
-        usercalendar = calendar.get_calendar(
+        usercalendar = calendar_main.get_calendar(
             session['jwt_payload']['sub'],
             start,
             end,
@@ -111,7 +111,7 @@ def create_app(test_config=None):
         end = '2019-05-22T19:56:40-04:00'
         timezone = 'America/New_York'
 
-        compared_calendar = calendar.compare_user_calendars(
+        compared_calendar = calendar_main.compare_user_calendars(
             session['jwt_payload']['sub'],
             friendID,
             start,
@@ -163,7 +163,7 @@ def create_app(test_config=None):
         end = "2019-05-22T19:56:40-04:00"
         timezone = "America/New_York"
 
-        usercalendar = calendar.compare_user_calendars(session['jwt_payload']['sub'], session['jwt_payload']['sub'], start, end, timezone)
+        usercalendar = calendar_main.compare_user_calendars(session['jwt_payload']['sub'], session['jwt_payload']['sub'], start, end, timezone)
 
         freebusy_string = ""
         for event in usercalendar:
