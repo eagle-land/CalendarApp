@@ -43,6 +43,10 @@
 
 {% block script %}
     <script>
+
+        function compareCalendar(e) {
+            window.location.href=`{{ url_for('compare_calendar', id='KEY') }}`.replace('KEY', e.id);
+        }
         
         function isEmpty(obj) {
             for(var key in obj) {
@@ -71,9 +75,10 @@
                 for (var key in friends) {
                     let e = document.createElement('button');
                     e.setAttribute('class', 'list-group-item list-group-item-action');
+                    e.setAttribute('id', key);
                     e.onclick = function() {
-                        window.location.href=`{{ url_for('compare_calendar', id='KEY') }}`.replace('KEY', key);
-                    }
+                        compareCalendar(e);
+                    };
                     e.innerHTML = friends[key];
                     $('#friend-list').append(e);
                 }

@@ -38,6 +38,9 @@ def testing_get_friends_pending():
     assert database.get_pending_friends('1') == {'4': 'test4'}
     assert database.get_pending_friends('1') != {'3': 'test4'}
 
+def testing_get_email_from_id():
+    print(database.get_email_from_id('google-oauth2|101784608437017000546'))
+
 
 if __name__ == '__main__':
     testing_user_exists()
@@ -46,4 +49,5 @@ if __name__ == '__main__':
     testing_email_search()
     testing_get_friends()
     testing_get_friends_pending()
+    testing_get_email_from_id()
     print("Passed all database tests.")
