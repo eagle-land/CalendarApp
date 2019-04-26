@@ -77,7 +77,7 @@ def create_event(user1id, user2id, summary, location, startdatetime, enddatetime
     calendar = googleapiclient.discovery.build(
         API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
-    response = calendar.events().insert(calendarID='primary', body=event).execute()
+    response = calendar.events().insert(calendarId='primary', body=event).execute()
     print('Event created: %s' % (event.get('htmlLink')))
 
 
