@@ -6,15 +6,18 @@ import google.oauth2.credentials
 import os
 import sys
 
-import app.auth as auth
-import app.database as database
+
+sys.path.append('/home/aruyten/CalendarApp/app/auth')
+sys.path.append('/home/aruyten/CalendarApp/app/database')
+import auth
+import database
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 if sys.platform == 'win32':
     CLIENT_SECRETS_FILE = basedir+'\\\\client_secret.json'
 else:
     CLIENT_SECRETS_FILE = basedir + '/client_secret.json'
-    
+
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'

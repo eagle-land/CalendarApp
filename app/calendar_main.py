@@ -1,4 +1,6 @@
-import app.calendar_auth as calendar_auth
+import sys
+sys.path.append('/home/aruyten/CalendarApp/app/calendar_auth')
+import calendar_auth
 
 
 class Event:
