@@ -12,7 +12,8 @@ from flask import url_for
 import http.client
 import urllib.parse
 
-import app.constants as constants
+sys.path.append('/home/aruyten/CalendarApp/app/constants')
+import constants
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 if sys.platform == 'win32':
@@ -92,7 +93,7 @@ def load_database_creds(userid):
     refreshToken = result[3]
 
     # gets secret info from client secret file and stores credentials in flask session
-    with open(CLIENT_SECRETS_FILE) as json_file:  
+    with open(CLIENT_SECRETS_FILE) as json_file:
         data = json.load(json_file)
     return {
         'client_id': data['web']['client_id'],
@@ -104,7 +105,7 @@ def load_database_creds(userid):
     }
 
     # gets secret info from client secret file and stores credentials in flask session
-    with open(CLIENT_SECRETS_FILE) as json_file:  
+    with open(CLIENT_SECRETS_FILE) as json_file:
         data = json.load(json_file)
     session['credentials'] = {
         'client_id': data['web']['client_id'],
@@ -188,8 +189,8 @@ def get_friends(userID):
     friendlist = []
     for x in mycursor.fetchall():
         friendlist.append(x[0])
-    
-    
+
+
     friendDict = {}
     for userID in friendlist:
         getNickname = 'SELECT nickname FROM user WHERE ID = "%s"' % (userID)

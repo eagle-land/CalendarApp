@@ -19,8 +19,10 @@ from flask import url_for
 from authlib.flask.client import OAuth
 from six.moves.urllib.parse import urlencode
 
-import app.constants as constants
-import app.database as database
+sys.path.append('/home/aruyten/CalendarApp/app/constants')
+sys.path.append('/home/aruyten/CalendarApp/app/database')
+import constants
+import database
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 if sys.platform == 'win32':
