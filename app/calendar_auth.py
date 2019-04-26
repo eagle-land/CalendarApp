@@ -15,7 +15,7 @@ if sys.platform == 'win32':
 else:
     CLIENT_SECRETS_FILE = basedir + '/client_secret.json'
     
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
 
@@ -36,6 +36,49 @@ def get_freebusy(userid, body):
     #              credentials in a persistent database instead.
     #flask.session['credentials'] = credentials_to_dict(credentials)
     return response
+
+
+def create_event(user1id, user2id, summary, location, startdatetime, enddatetime, timezone):
+    user1email = database.get_email_from_id(user1id)
+    user2email = database.get_email_from_id(user2id)
+    event = {
+        'summary': summary,
+        'location': location,
+        'description': '',
+        'start': {
+            'dateTime': startdatetime,
+            'timeZone': timezone
+        },
+        'end': {
+            'dateTime': enddatetime,
+            'timeZone': timezone
+        },
+        'recurrence': [
+            #'RRULE:FREQ=DAILY;COUNT=1'
+        ],
+        'attendees': [
+            {'email': user1email},
+            {'email': user2email}
+        ],
+        'reminders': {
+            'useDefault': False,
+            'overrides': [
+                {'method': 'email', 'minutes': 24 * 60},
+                {'method': 'popup', 'minutes': 10},
+            ],
+        },
+    }
+
+    # Load credentials from the session.
+    usercredentials = database.load_database_creds(user1id)
+    credentials = google.oauth2.credentials.Credentials(
+        **usercredentials)
+
+    calendar = googleapiclient.discovery.build(
+        API_SERVICE_NAME, API_VERSION, credentials=credentials)
+
+    response = calendar.events().insert(calendarID='primary', body=event).execute()
+    print('Event created: %s' % (event.get('htmlLink')))
 
 
 def authorize():

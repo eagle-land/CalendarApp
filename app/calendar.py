@@ -1,4 +1,6 @@
 import app.calendar_auth as calendar_auth
+from datetime import datetime, timedelta
+from dateutil import relativedelta
 
 
 class Event:
@@ -214,3 +216,13 @@ def get_shared_freetimes(rangestart, rangeend, calendar1, calendar2):
 
     # Finished going through all events. Create a new calendar and return it.
     return Calendar(freetimes)
+
+
+"""
+def get_start_of_week():
+    timestring = (
+            datetime.today().strftime('%Y-%m-%d') +
+            'T' +
+            datetime.today().strftime('%H:%M:%S')
+    )
+"""
