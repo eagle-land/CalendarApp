@@ -107,6 +107,8 @@ def create_app(test_config=None):
     def compare_calendar():
         friendID = request.args.get('id')
 
+        print(friendID)
+
         start = '2019-04-22T19:56:40-04:00'
         end = '2019-05-22T19:56:40-04:00'
         timezone = 'America/New_York'
