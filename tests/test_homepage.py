@@ -6,33 +6,33 @@ import time
 import pytest 
 
 browser = webdriver.Chrome()
-browser.get("localhost:5000")
+browser.get("http://www.sharedskies.us")
 
 def test_homepage():
     #Tests that default homepage is up
     CurrentUrl = browser.current_url
-    assert CurrentUrl == "http://localhost:5000/"
+    assert CurrentUrl == "http://www.sharedskies.us/"
     assert "Shared Skies" in browser.title
 
 def test_about():
     #Test the about page
-    browser.get("localhost:5000/about")
+    browser.get("http://www.sharedskies.us/about")
     CurrentUrl = browser.current_url
-    assert CurrentUrl == "http://localhost:5000/about"
+    assert CurrentUrl == "http://www.sharedskies.us/about"
     assert "About" in browser.title
 
 def test_contact():
     #Test the contact page
-    browser.get("localhost:5000/contact")
+    browser.get("http://www.sharedskies.us/contact")
     CurrentUrl = browser.current_url
-    assert CurrentUrl == "http://localhost:5000/contact"
+    assert CurrentUrl == "http://www.sharedskies.us/contact"
     assert "Contact" in browser.title
 
 def test_button():
     #Test the Login button
-    browser.get("localhost:5000")
+    browser.get("http://www.sharedskies.us/")
     CurrentUrl = browser.current_url
-    assert CurrentUrl == "http://localhost:5000/"
+    assert CurrentUrl == "http://www.sharedskies.us/"
     assert "Shared Skies" in browser.title
     Button = browser.find_element_by_class_name("btn-primary")
     Button.click()
