@@ -95,7 +95,6 @@ def home_calendar():
         end,
         timezone
     )
-    print('after get_cal in main')
     events = []
     for event in usercalendar:
         id = 0
@@ -105,10 +104,7 @@ def home_calendar():
             'end': event.endtime,
         })
         id = id + 1
-    print('before getting friends in main')
     friends = database.get_friends(session['jwt_payload']['sub'])
-    print('after getting friends in main')
-    print(friends)
     return render_template('homeCalendar.html', events=events, friends=friends)
 
 @app.route('/compare')
