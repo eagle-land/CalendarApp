@@ -2,7 +2,7 @@
 {% extends 'basePrivate.html' %}
 
 {% block title %} Calendar {% endblock %}
-
+<!--
 {% block style %}
     <link rel="stylesheet" href="{{ url_for('static', filename='fullCalendar/core/main.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='fullCalendar/daygrid/main.min.css') }}">
@@ -17,6 +17,7 @@
     <script src="{{ url_for('static', filename='fullCalendar/timegrid/main.min.js') }}"></script>
     <script src="{{ url_for('static', filename='fullCalendar/bootstrap/main.min.js') }}"></script>
 {% endblock %}
+-->
 
 <!------------------ Calendar Page HTML Content ------------------------------->
 {% block content %}
@@ -42,7 +43,7 @@
 
 {% block script %}
     <script>
-
+        
         function isEmpty(obj) {
             for(var key in obj) {
                 if(obj.hasOwnProperty(key))
@@ -53,14 +54,14 @@
 
         $(document).ready(function() {
             var calendarEl = document.getElementById('calendar');
-            /*
+            
             var events = '{{ events }}';
-            var splitEvents = events.split('&#39;').join('"')
+            var splitEvents = events.split('&#39;').join('"');
             parsedEvents = JSON.parse(splitEvents);
             console.log(parsedEvents);
 
             var friends = '{{ friends }}';
-            friends = friends.split('&#39;').join('"')
+            friends = friends.split('&#39;').join('"');
             console.log(friends);
             friends = JSON.parse(friends);
             if (isEmpty(friends)) {
@@ -68,14 +69,14 @@
                 $('#friend-list').append(element);
             } else {
                 for (var key in friends) {
-                    let element = '<button type="button"' +
-                        ' class="list-group-item list-group-item-action" ' + 
-                        'onclick="window.location.href=\'{{ url_for(\'compare_calendar\', id=' + key + ') }}\'">' + 
-                        friends[key] + '</button>';
+                    let element = "<button type=\"button\"" +
+                        " class=\"list-group-item list-group-item-action\" " + 
+                        "onclick=\"window.location.href='{{ url_for('compare_calendar', id=" + key + ") }}'\">" + 
+                        friends[key] + "</button>";
                     $('#friend-list').append(element);
                 }
             }
-            */
+            
         
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 //selectable: true,
@@ -98,7 +99,7 @@
                 // Array holding all event objects
                 events: parsedEvents,
                 // Allow user to create an event
-                /* select: function(info) {
+                select: function(info) {
                     var title = prompt('Event Title:');
                     var eventData;
                     if (title) {
@@ -110,7 +111,7 @@
                         $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
                     }
                     $('#calendar').fullCalendar('unselect');
-                } */
+                }
             });
         
             calendar.render();
