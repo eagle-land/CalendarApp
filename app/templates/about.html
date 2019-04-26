@@ -1,4 +1,8 @@
-{% extends 'basePublic.html' %}
+{% if authenticated == true %}
+    {% extends 'basePrivate.html' %}
+{% else %}
+    {% extends 'basePublic.html' %}
+{% endif %}
 
 {% block title %} About {% endblock %}
 

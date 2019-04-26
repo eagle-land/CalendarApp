@@ -65,15 +65,27 @@ def create_app(test_config=None):
 
     @app.route('/')
     def index():
-        return render_template('index.html')
+        if (session):
+            authenticated = True
+        else:
+            authenticated = False
+        return render_template('index.html', authenticated=authenticated)
 
     @app.route('/about')
     def about():
-        return render_template('about.html')
+        if (session):
+            authenticated = True
+        else:
+            authenticated = False
+        return render_template('about.html', authenticated=authenticated)
 
     @app.route('/contact')
     def contact():
-        return render_template('contact.html')
+        if (session):
+            authenticated = True
+        else:
+            authenticated = False
+        return render_template('contact.html', authenticated=authenticated)
 
     @app.route('/home')
     def home_calendar():
