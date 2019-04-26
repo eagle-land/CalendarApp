@@ -181,12 +181,14 @@ def merge_calendars(calendar1, calendar2):
         event1 = allevents[index]
         event2 = allevents[index + 1]
         # Event 2 fits inside event1.
-        if event2.starttime >= event1.starttime and event2.endtime <= event1.endtime:
+        if event1.starttime <= event2.starttime < event2.endtime <= event1.endtime:
             allevents.pop(index + 1)
+            index -= 1
         # Event2 starts during the duration of event 1 and ends after event 1.
         elif event1.starttime <= event2.starttime <= event1.endtime < event2.endtime:
             allevents[index] = Event(event1.starttime, event2.endtime)
             allevents.pop(index + 1)
+            index -=1
         index += 1
     print('line 183')
     return Calendar(allevents)
