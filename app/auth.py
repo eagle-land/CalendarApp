@@ -25,10 +25,10 @@ import constants
 import database
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-if sys.platform == 'win32':
-    CLIENT_SECRETS_FILE = basedir+'\\\\client_secret.json'
-else:
-    CLIENT_SECRETS_FILE = basedir + '/client_secret.json'
+# if sys.platform == 'win32':
+#     CLIENT_SECRETS_FILE = basedir+'\\\\client_secret.json'
+# else:
+CLIENT_SECRETS_FILE = basedir + '/client_secret.json'
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:

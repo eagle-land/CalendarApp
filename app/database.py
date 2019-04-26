@@ -16,10 +16,10 @@ sys.path.append('/home/aruyten/CalendarApp/app/constants')
 import constants
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-if sys.platform == 'win32':
-    CLIENT_SECRETS_FILE = basedir+'\\\\client_secret.json'
-else:
-    CLIENT_SECRETS_FILE = basedir + '/client_secret.json'
+# if sys.platform == 'win32':
+#     CLIENT_SECRETS_FILE = basedir+'\\\\client_secret.json'
+# else:
+CLIENT_SECRETS_FILE = basedir + '/client_secret.json'
 
 
 def add_to_database():
