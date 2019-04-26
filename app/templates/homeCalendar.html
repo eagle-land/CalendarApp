@@ -2,7 +2,7 @@
 {% extends 'basePrivate.html' %}
 
 {% block title %} Calendar {% endblock %}
-<!--
+
 {% block style %}
     <link rel="stylesheet" href="{{ url_for('static', filename='fullCalendar/core/main.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='fullCalendar/daygrid/main.min.css') }}">
@@ -17,7 +17,7 @@
     <script src="{{ url_for('static', filename='fullCalendar/timegrid/main.min.js') }}"></script>
     <script src="{{ url_for('static', filename='fullCalendar/bootstrap/main.min.js') }}"></script>
 {% endblock %}
--->
+
 
 <!------------------ Calendar Page HTML Content ------------------------------->
 {% block content %}
@@ -69,11 +69,13 @@
                 $('#friend-list').append(element);
             } else {
                 for (var key in friends) {
-                    let element = "<button type=\"button\"" +
-                        " class=\"list-group-item list-group-item-action\" " + 
-                        "onclick=\"window.location.href='{{ url_for('compare_calendar', id=" + key + ") }}'\">" + 
-                        friends[key] + "</button>";
-                    $('#friend-list').append(element);
+                    let e = document.createElement('button');
+                    e.setAttribute('class', 'list-group-item list-group-item-action');
+                    e.onclick = function() {
+                        window.location.href=`{{ url_for('compare_calendar', id='KEY') }}`.replace('KEY', key);
+                    }
+                    e.innerHTML = friends[key];
+                    $('#friend-list').append(e);
                 }
             }
             

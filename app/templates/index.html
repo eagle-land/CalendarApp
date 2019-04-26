@@ -2,15 +2,15 @@
 
 {% block title %}Sign In{% endblock %}
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css', q='') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css', q='1') }}">
 {% endblock %}
 
 {% block content %}
-    <div class="radial-bg vert-align">
+    <div class="vert-align" style="background-image: url({{ url_for('static', filename='img/landingBG.jpg') }});">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="display-1 text-center text-white">Shared Skies</h1>
+                    <h1 class="display-1 text-center text-dark">Shared Skies</h1>
                 </div>
             </div>
             <div class="row justify-content-md-center">
