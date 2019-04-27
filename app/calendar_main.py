@@ -123,11 +123,8 @@ class Calendar:
 
 
 def compare_user_calendars(user1id, user2id, start, end, timezone):
-    print('get first cal')
     calendar1 = get_calendar(user1id, start, end, timezone)
-    print('get second cal')
     calendar2 = get_calendar(user2id, start, end, timezone)
-    print('done getting calendar 1 and 2')
     return get_shared_freetimes(start, end, calendar1, calendar2)
 
 
@@ -156,9 +153,6 @@ def get_calendar(userid, start, end, timezone):
             event = Event(calendar[busytimes][index]['start'], calendar[busytimes][index]['end'])
             userevents.append(event)
             index += 1
-    print('about to return calendar(userevents)')
-    print(calendar)
-    print('*************************************************************')
     return Calendar(userevents)
 
 
@@ -168,15 +162,11 @@ def getstarttime(elem):
 
 
 def merge_calendars(calendar1, calendar2):
-    print('starting function')
     allevents = calendar1.events
-    print('line here')
     for event in calendar2:
         allevents.append(event)
-    print('line 168')
     allevents.sort(key=getstarttime)
     index = 0
-    print('line 171')
     while index + 1 < len(allevents):
         event1 = allevents[index]
         event2 = allevents[index + 1]
@@ -190,14 +180,12 @@ def merge_calendars(calendar1, calendar2):
             allevents.pop(index + 1)
             index -=1
         index += 1
-    print('line 183')
     return Calendar(allevents)
 
 
 def get_shared_freetimes(rangestart, rangeend, calendar1, calendar2):
     # Merge calendars into one.
     calendar = merge_calendars(calendar1, calendar2)
-    print('merged calendars')
     freetimes = []
     index = -1
     freetimestart = rangestart
@@ -225,5 +213,4 @@ def get_shared_freetimes(rangestart, rangeend, calendar1, calendar2):
             index += 1
 
     # Finished going through all events. Create a new calendar and return it.
-    print('done with get shared free times')
     return Calendar(freetimes)

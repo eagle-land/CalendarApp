@@ -26,18 +26,13 @@ API_VERSION = 'v3'
 def get_freebusy(userid, body):
     # Load credentials from the session.
     usercredentials = database.load_database_creds(userid)
-    print('loaded user creds')
     credentials = google.oauth2.credentials.Credentials(
         **usercredentials)
-    print('set credentials')
 
     calendar = googleapiclient.discovery.build(
         API_SERVICE_NAME, API_VERSION, credentials=credentials)
-    print('set calendar')
 
     response = calendar.freebusy().query(body=body).execute()
-    print('set response')
-
     # Save credentials back to session in case access token was refreshed.
     # ACTION ITEM: In a production app, you likely want to save these
     #              credentials in a persistent database instead.
