@@ -1,16 +1,22 @@
-{% extends 'basePublic.html' %}
+{% if authenticated == true %}
+    {% extends 'basePrivate.html' %}
+{% else %}
+    {% extends 'basePublic.html' %}
+{% endif %}
 
 {% block title %}Sign In{% endblock %}
 {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css', q='') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/landing.css', q='1') }}">
 {% endblock %}
 
 {% block content %}
-    <div class="radial-bg vert-align">
+    <div class="vert-align" style="background-image: url({{ url_for('static', filename='img/landingBG.jpg') }}); background-size: 100% auto;">
         <div class="container">
             <div class="row">
-                <div class="col-md-12">
-                    <h1 class="display-1 text-center text-white">Shared Skies</h1>
+                <div class="col-md-12 text-center">
+                    <h1 
+                        class="display-1 text-dark d-inline" 
+                        style="border:3px solid #343a40; padding:3px;background-color: rgba(255,255,255,.3);border-radius:10px;">Shared Skies</h1>
                 </div>
             </div>
             <div class="row justify-content-md-center">
