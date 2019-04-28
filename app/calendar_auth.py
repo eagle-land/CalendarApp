@@ -29,7 +29,7 @@ def get_freebusy(userid, body):
     calendar = googleapiclient.discovery.build(
         API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
-    response = calendar.freebusy().query(body=body).execute()
+    response = gicalendar.freebusy().query(body=body).execute()
 
     # Save credentials back to session in case access token was refreshed.
     # ACTION ITEM: In a production app, you likely want to save these

@@ -3,7 +3,7 @@ goal: maybe at least one each, five for satisfactory (??)
 
 ######### calendar.py ######### CALENDAR-SIDE########
 
-cal_compare_user_calendars: 0
+cal_compare_user_calendars: 1
 
 cal_get_calendar: 2
 

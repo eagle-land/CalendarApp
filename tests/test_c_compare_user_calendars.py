@@ -12,9 +12,6 @@ def test1():
     end = "2019-04-05T00:00:00-04:00"
     timezone = "America/New_York" #only use this as the timezone
 
-    calendar1 = calendar.get_calendar(user1id, start, end, timezone)
-    calendar2 = calendar.get_calendar(user2id, start, end, timezone)
-
     # Correct return value
     # Create a calendar containing the correct shared freetimes between both user calendars.
     freeevents = [
