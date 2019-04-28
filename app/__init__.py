@@ -6,14 +6,15 @@ from authlib.flask.client import OAuth
 import os.path
 
 import sys
+
 sys.path.append('/home/aruyten/CalendarApp/app/auth')
 sys.path.append('/home/aruyten/CalendarApp/app/constants')
-sys.path.append('/home/aruyten/CalendarApp/app/salendar_main')
+sys.path.append('/home/aruyten/CalendarApp/app/calendar_main')
 sys.path.append('/home/aruyten/CalendarApp/app/calendar_auth')
 sys.path.append('/home/aruyten/CalendarApp/app/database')
 import auth
 import constants
-import calendar_main
+import calendar_main as calendar
 import calendar_auth
 import database
 
@@ -147,43 +148,43 @@ def compare_calendar():
 
     friends = database.get_friends(session['jwt_payload']['sub'])
 
-    return render_template('compareCalendar.html', events=events, friends=friends)        
+    return render_template('compareCalendar.html', events=events, friends=friends)
 
-    @app.route('/callback')
-    def callback_handling():
-        return auth.callback_handling(auth0)
+@app.route('/callback')
+def callback_handling():
+    return auth.callback_handling(auth0)
 
-    @app.route('/credentials')
-    def load_credentials():
-        return auth.load_credentials()
+@app.route('/credentials')
+def load_credentials():
+    return auth.load_credentials()
 
-    @app.route('/login')
-    def login():
-        return auth.login(auth0)
+@app.route('/login')
+def login():
+    return auth.login(auth0)
 
-    @app.route('/dashboard')
-    @auth.requires_auth
-    def dashboard():
-        return auth.dashboard()
+@app.route('/dashboard')
+@auth.requires_auth
+def dashboard():
+    return auth.dashboard()
 
-    @app.route('/logout')
-    def logout():
-        return auth.logout(auth0)
+@app.route('/logout')
+def logout():
+    return auth.logout(auth0)
 
-    @app.route('/webtest')
-    def web_test():
+@app.route('/webtest')
+def web_test():
 
-        start = "2019-04-22T19:56:40-04:00"
-        end = "2019-05-22T19:56:40-04:00"
-        timezone = "America/New_York"
+    start = "2019-04-22T19:56:40-04:00"
+    end = "2019-05-22T19:56:40-04:00"
+    timezone = "America/New_York"
 
-        usercalendar = calendar.compare_user_calendars(session['jwt_payload']['sub'], session['jwt_payload']['sub'], start, end, timezone)
+    usercalendar = calendar.compare_user_calendars(session['jwt_payload']['sub'], session['jwt_payload']['sub'], start, end, timezone)
 
-        freebusy_string = ""
-        for event in usercalendar:
-            freebusy_string += event.starttime + ' - ' + event.endtime + '<br />'
+    freebusy_string = ""
+    for event in usercalendar:
+        freebusy_string += event.starttime + ' - ' + event.endtime + '<br />'
 
-        return freebusy_string
+    return freebusy_string
 
 @app.route('/authorize')
 def authorize():

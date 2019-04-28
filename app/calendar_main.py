@@ -1,11 +1,11 @@
 import sys
 sys.path.append('/home/aruyten/CalendarApp/app/calendar_auth')
+sys.path.append('/home/aruyten/CalendarApp/app/database')
 import calendar_auth
 from datetime import date
 from dateutil import relativedelta
 
-import app.calendar_auth as calendar_auth
-import app.database as database
+import database as database
 
 
 class Event:

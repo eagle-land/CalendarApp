@@ -13,6 +13,9 @@ from flask import session
 from flask import url_for
 from six.moves.urllib.parse import urlencode
 
+import sys
+import os
+
 sys.path.append('/home/aruyten/CalendarApp/app/constants')
 sys.path.append('/home/aruyten/CalendarApp/app/database')
 import constants
