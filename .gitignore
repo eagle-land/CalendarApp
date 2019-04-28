@@ -18,3 +18,5 @@ build/
 node_modules
 client_secret.json
 constants.py
+*.pickle
+tests/test_create_event.py

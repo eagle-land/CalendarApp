@@ -1,4 +1,8 @@
+from datetime import date
+from dateutil import relativedelta
+
 import app.calendar_auth as calendar_auth
+import app.database as database
 
 
 class Event:
@@ -140,7 +144,7 @@ def get_calendar(userid, start, end, timezone):
 
     response = calendar_auth.get_freebusy(userid, body)
     if not response:
-        print('Error.')
+        return 'There was an error retrieving your calendar data.'
 
     userevents = []
     calendars = response['calendars']
@@ -153,6 +157,41 @@ def get_calendar(userid, start, end, timezone):
             index += 1
 
     return Calendar(userevents)
+
+
+def create_event(user1id, user2id, summary, location, startdatetime, enddatetime, timezone):
+    user1email = database.get_email_from_id(user1id)
+    user2email = database.get_email_from_id(user2id)
+    body = {
+        'summary': summary,
+        'location': location,
+        'description': '',
+        'start': {
+            'dateTime': startdatetime,
+            'timeZone': timezone
+        },
+        'end': {
+            'dateTime': enddatetime,
+            'timeZone': timezone
+        },
+        'recurrence': [],
+        'attendees': [
+            {'email': user1email},
+            {'email': user2email}
+        ],
+        'reminders': {
+            'useDefault': False,
+            'overrides': [
+                {'method': 'popup', 'minutes': 30}
+            ],
+        },
+    }
+
+    response = calendar_auth.insert_event(user1id, body)
+    if not response:
+        return 'There was an error creating a new event.'
+
+    return 'Event created: %s' % (response.get('htmlLink'))
 
 
 def getstarttime(elem):
@@ -214,3 +253,25 @@ def get_shared_freetimes(rangestart, rangeend, calendar1, calendar2):
 
     # Finished going through all events. Create a new calendar and return it.
     return Calendar(freetimes)
+
+
+def get_start_of_week():
+    # Get start of current week.
+    day = date.today()
+    start = day - relativedelta.relativedelta(days=day.weekday() + 1)
+    # Parse the date into a readable format and return it.
+    datetimestring = start.strftime('%Y-%m-%d') + 'T00:00:00-04:00'
+    return datetimestring
+
+
+def get_next_month():
+    # Get start of current week.
+    day = date.today()
+    start = day - relativedelta.relativedelta(days=day.weekday() + 1)
+    # From the start of this week, get the same day of next month.
+    nextmonth = start + relativedelta.relativedelta(months=1)
+    # Get start of the week containing that day.
+    nextmonth = nextmonth - relativedelta.relativedelta(days=nextmonth.weekday() + 1)
+    # Parse the date into a readable format and return it.
+    datetimestring = nextmonth.strftime('%Y-%m-%d') + 'T00:00:00-04:00'
+    return datetimestring

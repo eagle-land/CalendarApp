@@ -4,19 +4,12 @@ import os
 from flask import Flask, render_template, session, request
 from authlib.flask.client import OAuth
 import os.path
-import datetime
-import json
 
 import app.auth as auth
 import app.constants as constants
 import app.calendar as calendar
 import app.calendar_auth as calendar_auth
 import app.database as database
-
-CLIENT_SECRETS_FILE = 'client_secret.json'
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
-API_SERVICE_NAME = 'calendar'
-API_VERSION = 'v3'
 
 
 def create_app(test_config=None):
@@ -65,21 +58,33 @@ def create_app(test_config=None):
 
     @app.route('/')
     def index():
-        return render_template('index.html')
+        if (session):
+            authenticated = True
+        else:
+            authenticated = False
+        return render_template('index.html', authenticated=authenticated)
 
     @app.route('/about')
     def about():
-        return render_template('about.html')
+        if (session):
+            authenticated = True
+        else:
+            authenticated = False
+        return render_template('about.html', authenticated=authenticated)
 
     @app.route('/contact')
     def contact():
-        return render_template('contact.html')
+        if (session):
+            authenticated = True
+        else:
+            authenticated = False
+        return render_template('contact.html', authenticated=authenticated)
 
     @app.route('/home')
     def home_calendar():
 
-        start = '2019-04-22T19:56:40-04:00'
-        end = '2019-05-22T19:56:40-04:00'
+        start = calendar.get_start_of_week()
+        end = calendar.get_next_month()
         timezone = 'America/New_York'
 
         usercalendar = calendar.get_calendar(
@@ -109,8 +114,8 @@ def create_app(test_config=None):
 
         print(friendID)
 
-        start = '2019-04-22T19:56:40-04:00'
-        end = '2019-05-22T19:56:40-04:00'
+        start = calendar.get_start_of_week()
+        end = calendar.get_next_month()
         timezone = 'America/New_York'
 
         compared_calendar = calendar.compare_user_calendars(
@@ -135,7 +140,6 @@ def create_app(test_config=None):
         friends = database.get_friends(session['jwt_payload']['sub'])
 
         return render_template('compareCalendar.html', events=events, friends=friends)        
-
 
     @app.route('/callback')
     def callback_handling():

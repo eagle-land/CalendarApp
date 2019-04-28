@@ -2,31 +2,20 @@
 
 from functools import wraps
 import json
-from os import environ as env
-import os
-import sys
 from werkzeug.exceptions import HTTPException
 import http.client
-import mysql.connector
 
 from dotenv import load_dotenv, find_dotenv
-from flask import Flask
 from flask import jsonify
 from flask import redirect
 from flask import render_template
 from flask import session
 from flask import url_for
-from authlib.flask.client import OAuth
 from six.moves.urllib.parse import urlencode
 
 import app.constants as constants
 import app.database as database
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-if sys.platform == 'win32':
-    CLIENT_SECRETS_FILE = basedir+'\\\\client_secret.json'
-else:
-    CLIENT_SECRETS_FILE = basedir + '/client_secret.json'
 
 ENV_FILE = find_dotenv()
 if ENV_FILE:
@@ -71,7 +60,6 @@ def callback_handling(auth0):
         'name': userinfo['name'],
         'picture': userinfo['picture']
     }
-    # needs to go to webtest to get credentials from google and store info in database
 
     return redirect('/credentials')
 
@@ -79,20 +67,19 @@ def callback_handling(auth0):
 def load_credentials():
     if 'credentials' not in session:
         # checks if user is in database, pulls credentials if so
-        if (database.check_user_exists(session['jwt_payload']['sub']) == True):
+        if database.check_user_exists(session['jwt_payload']['sub']) == True:
             session['credentials'] = database.load_database_creds(session['jwt_payload']['sub'])
         else:
             # otherwise has user authorize with google
             return redirect('/authorize')
 
     # if user isn't in database they are added here
-    if (database.check_user_exists(session['jwt_payload']['sub']) == False):
+    if database.check_user_exists(session['jwt_payload']['sub']) == False:
         database.add_to_database()
     return redirect('/home')
 
 
 def login(auth0):
-    #env['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
     return auth0.authorize_redirect(redirect_uri=AUTH0_CALLBACK_URL, audience=AUTH0_AUDIENCE)
 
 
@@ -111,14 +98,14 @@ def dashboard():
 
 
 def generate_access_token():
-    #call to get access token from auth0 to use their "management API"
+    # Call to get access token from auth0 to use their "management API"
     conn = http.client.HTTPSConnection("shared-skies.auth0.com")
     payload = "{\"client_id\":\"%s\",\"client_secret\":\"%s\",\"audience\":\"https://shared-skies.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}" % (constants.AUTH0_CLIENT_ID, constants.AUTH0_CLIENT_SECRET)
-    headers = { 'content-type': "application/json" }
+    headers = {'content-type': "application/json"}
     conn.request("POST", "/oauth/token", payload, headers)
     res = conn.getresponse()
     data = res.read()
     authTokenResponseString = data.decode("utf-8")
     authJson = json.loads(authTokenResponseString)
-    #returns the access token
+    # Returns the access token
     return authJson["access_token"]

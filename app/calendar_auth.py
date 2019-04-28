@@ -6,7 +6,6 @@ import google.oauth2.credentials
 import os
 import sys
 
-import app.auth as auth
 import app.database as database
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -15,7 +14,7 @@ if sys.platform == 'win32':
 else:
     CLIENT_SECRETS_FILE = basedir + '/client_secret.json'
     
-SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 API_SERVICE_NAME = 'calendar'
 API_VERSION = 'v3'
 
@@ -29,12 +28,20 @@ def get_freebusy(userid, body):
     calendar = googleapiclient.discovery.build(
         API_SERVICE_NAME, API_VERSION, credentials=credentials)
 
-    response = gicalendar.freebusy().query(body=body).execute()
+    response = calendar.freebusy().query(body=body).execute()
+    return response
 
-    # Save credentials back to session in case access token was refreshed.
-    # ACTION ITEM: In a production app, you likely want to save these
-    #              credentials in a persistent database instead.
-    #flask.session['credentials'] = credentials_to_dict(credentials)
+
+def insert_event(userid, body):
+    # Load credentials from the session.
+    usercredentials = database.load_database_creds(userid)
+    credentials = google.oauth2.credentials.Credentials(
+        **usercredentials)
+
+    calendar = googleapiclient.discovery.build(
+        API_SERVICE_NAME, API_VERSION, credentials=credentials)
+
+    response = calendar.events().insert(calendarId='primary', body=body).execute()
     return response
 
 
