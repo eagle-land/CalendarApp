@@ -2,12 +2,7 @@ import mysql.connector
 import json
 import os
 import sys
-from flask import Flask
-from flask import jsonify
-from flask import redirect
-from flask import render_template
 from flask import session
-from flask import url_for
 
 import http.client
 import urllib.parse
@@ -253,4 +248,18 @@ def get_user_email(token):
     response = json.loads(data.decode("utf-8"))
     print(response["email"])
     return response["email"]
+
+def get_email_from_id(userID):
+    connection = mysql.connector.connect(
+        user=constants.USER, password=constants.PASSWORD,
+        host=constants.HOST,
+        port=constants.PORT, database=constants.DATABASE)
+    mycursor = connection.cursor()
+    # query to get user information
+    query = 'SELECT email FROM eaglelandDB.user WHERE ID = "%s"' % (userID)
+    mycursor.execute(query)
+    result = mycursor.fetchone()
+    mycursor.close
+    # returns userID, can be rolled into friend request functions
+    return result[0]
 
