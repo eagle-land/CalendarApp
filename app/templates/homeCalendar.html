@@ -117,7 +117,7 @@
                 // Array holding all event objects
                 events: parsedEvents,
                 // Allow user to create an event
-                select: function(info) {
+                /*select: function(info) {
                     var title = prompt('Event Title:');
                     var eventData;
                     if (title) {
@@ -129,8 +129,8 @@
                         $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
                     }
                     $('#calendar').fullCalendar('unselect');
-                }
-            });
+                }*/
+            }); 
         
             calendar.render();
         });

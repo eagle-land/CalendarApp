@@ -111,13 +111,14 @@ def create_app(test_config=None):
     @app.route('/compare')
     def compare_calendar():
         friendID = request.args.get('id')
+        userID = session['jwt_payload']['sub']
 
         start = calendar.get_start_of_week()
         end = calendar.get_next_month()
         timezone = 'America/New_York'
 
         compared_calendar = calendar.compare_user_calendars(
-            session['jwt_payload']['sub'],
+            userID,
             friendID,
             start,
             end,
@@ -137,13 +138,39 @@ def create_app(test_config=None):
 
         friends = database.get_friends(session['jwt_payload']['sub'])
 
-        return render_template('compareCalendar.html', events=events, friends=friends)
+        return render_template(
+            'compareCalendar.html', 
+            events=events, 
+            friends=friends, 
+            friendID=friendID, 
+            userID=userID
+        )
 
     @app.route('/addfriend')
     def add_friend():
         email = request.args.get('email')
         database.create_friend(email)
-        return redirect(url_for('home_calendar'))
+        return redirect('/home')
+
+    @app.route('/create_event')
+    def create_event():
+        user1id = request.args.get('userID')
+        user2id = request.args.get('friendID')
+        summary = request.args.get('title')
+        start =   request.args.get('start')
+        end =     request.args.get('end')
+
+        calendar.create_event(
+            user1id, 
+            user2id, 
+            summary, 
+            '', 
+            start, 
+            end, 
+            'America/New_York'
+        )
+
+        return redirect('/home')
 
     @app.route('/callback')
     def callback_handling():
