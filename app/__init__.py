@@ -143,7 +143,7 @@ def create_app(test_config=None):
     def add_friend():
         email = request.args.get('email')
         database.create_friend(email)
-        return redirect(url_for('home'))
+        return redirect(url_for('home_calendar'))
 
     @app.route('/callback')
     def callback_handling():
