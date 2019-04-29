@@ -39,6 +39,7 @@ def test_button():
     assert "Sign In" in browser.title
     
 def test_login():
+    #tests auth0 login
     time.sleep(3)
     Email = browser.find_element(By.CSS_SELECTOR, 'input[name^="email"]')
     Password = browser.find_element_by_css_selector('input[name="password"]')
@@ -55,6 +56,7 @@ def test_login():
     assert "Sign In" not in browser.title
 
 def test_calendar_nav_buttons():
+    #Tests the calendar nav buttons (day, week, prev, next)
     time.sleep(1)
     Day = browser.find_element_by_class_name("fc-timeGridDay-button")
     Day.click()
@@ -64,10 +66,23 @@ def test_calendar_nav_buttons():
     time.sleep(1)
     Prev = browser.find_element_by_class_name("fc-prev-button")
     Prev.click()
-    time.sleep(1)  
+    time.sleep(1)     
     Next = browser.find_element_by_class_name("fc-next-button")
     Next.click()
+        
     
+def test_friends():
+    #tests friend buttons
+    Searchbar = browser.find_element_by_id("add-friend")
+    Searchbar.clear
+    Searchbar.send_keys("lukerinehart79@gmail.com")
+    time.sleep(1)
+    Add = browser.find_element_by_xpath("/html/body/div/div/div/div[3]/div[1]/button")
+    Add.click()
+    #Find Friend List
+    #Friend-List = browser.find_element_by_id("friend-list")
+
+    #exits the browser
     time.sleep(10)
     browser.close()
     browser.quit()
