@@ -140,7 +140,22 @@
                             start: info.start,
                             end: info.end
                         };
-                        $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+
+                        var friendID = '{{ friendID }}';
+                        var userID = '{{ userID }}';
+                        var startTime = new Date(info.start).toJSON();
+                        var endTime = new Date(info.end).toJSON();
+                        var createEvent = `{{ url_for('create_event', userID='USERID', friendID='FRIENDID', title='TITLE', start='START', end='END') }}`;
+
+                        createEvent = createEvent.replace('USERID', userID);
+                        createEvent = createEvent.replace('FRIENDID', friendID);
+                        createEvent = createEvent.replace('TITLE', title);
+                        createEvent = createEvent.replace('START', startTime);
+                        createEvent = createEvent.replace('END', endTime);
+                        createEvent = createEvent.split('&amp;').join('&');
+                        createEvent = createEvent.split(' ').join('%20');
+                        
+                        window.location.href=createEvent;
                     }
                     $('#calendar').fullCalendar('unselect');
                 }
