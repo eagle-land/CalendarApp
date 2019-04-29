@@ -77,7 +77,6 @@
         }
 
         function addFriend() {
-            alert('adding friend');
             var email = $("#add-friend").val();
             window.location.href=`{{ url_for('add_friend', email='KEY') }}`.replace('KEY', email);
         }
