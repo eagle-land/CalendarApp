@@ -27,10 +27,17 @@
         <div class="row">
             <div id="calendar" class="col-md-8"></div>
             <div class="col-md-1"></div>
-            <div class="col-md-3">
-                <p>Click on a friend to see free times</p>
-                <div id="friend-list" class="list-group">
-                    <!-- Friends will be added in here on page load -->
+            <div class="col-md-3 p-3" style="background-color: whitesmoke">
+                <div class="mb-3">
+                    <h6>Add Friend</h6>
+                    <input type="email" placeholder="friend@email.com" id="add-friend" />
+                    <button onClick="addFriend()" class="btn btn-primary">Add</button>
+                </div>
+                <div>
+                    <h6>Select a friend to compare schedules</h6>
+                    <div id="friend-list" class="list-group">
+                        <!-- Friends will be added in here on page load -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -57,6 +64,11 @@
             return true;
         }
 
+        function addFriend() {
+            var email = $("#add-friend").val();
+            window.location.href=`{{ url_for('add_friend', email='KEY') }}`.replace('KEY', email);
+        }
+
         $(document).ready(function() {
             var calendarEl = document.getElementById('calendar');
             
@@ -67,7 +79,6 @@
 
             var friends = '{{ friends }}';
             friends = friends.split('&#39;').join('"');
-            console.log(friends);
             friends = JSON.parse(friends);
             if (isEmpty(friends)) {
                 let element  = '<div class="list-group-item">Sorry, you have no friends :(</div>';
