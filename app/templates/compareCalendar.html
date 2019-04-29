@@ -135,7 +135,6 @@
                     var title = prompt('Event Title:');
                     var eventData;
                     if (title) {
-                        alert('worked');
                         eventData = {
                             title: title,
                             start: info.start,
@@ -155,8 +154,6 @@
                         createEvent = createEvent.replace('END', endTime);
                         createEvent = createEvent.split('&amp;').join('&');
                         createEvent = createEvent.split(' ').join('%20');
-
-                        alert(createEvent);
                         
                         window.location.href=createEvent;
                     }
