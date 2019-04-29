@@ -1,7 +1,7 @@
 from __future__ import print_function
 import os
 
-from flask import Flask, render_template, session, request
+from flask import Flask, render_template, session, request, redirect, url_for
 from authlib.flask.client import OAuth
 import os.path
 
@@ -112,8 +112,6 @@ def create_app(test_config=None):
     def compare_calendar():
         friendID = request.args.get('id')
 
-        print(friendID)
-
         start = calendar.get_start_of_week()
         end = calendar.get_next_month()
         timezone = 'America/New_York'
@@ -139,7 +137,13 @@ def create_app(test_config=None):
 
         friends = database.get_friends(session['jwt_payload']['sub'])
 
-        return render_template('compareCalendar.html', events=events, friends=friends)        
+        return render_template('compareCalendar.html', events=events, friends=friends)
+
+    @app.route('/addfriend')
+    def add_friend():
+        email = request.args.get('email')
+        database.create_friend(email)
+        return redirect(url_for('home'))
 
     @app.route('/callback')
     def callback_handling():

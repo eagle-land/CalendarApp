@@ -262,6 +262,7 @@ def get_email_from_id(userID):
     # returns userID, can be rolled into friend request functions
     return result[0]
 
+
 def get_id_from_email(email):
     connection = mysql.connector.connect(
         user=constants.USER, password=constants.PASSWORD,
